@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">GT Store</string>
+    <string name="app_slogan">Delivering Happiness!</string>
+
+    <string name="onboarding_title1">Setup your store!</string>
+    <string name="onboarding_title2">Add/Remove Products</string>
+    <string name="onboarding_title3">Manage your orders!</string>
+    <string name="onboarding_description1">Setup your online Grocer Taxi store in your city of choice with no hassle.</string>
+    <string name="onboarding_description2">Add or remove products in different categories we provide with ease.</string>
+    <string name="onboarding_description3">Manage customers\' orders - Update them about their orders, accept payment, etc.</string>
+</resources>

@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:context=".AddProductActivity">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:clipToPadding="false"
+            android:paddingBottom="48dp">
+
+            <ImageView
+                android:id="@+id/close_btn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="24dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_close"
+                android:contentDescription="@string/app_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/colorIconDark" />
+
+            <TextView
+                android:id="@+id/add_product_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:includeFontPadding="false"
+                android:text="Add new product"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="24sp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toStartOf="@+id/illustration_add_product"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/close_btn" />
+
+            <TextView
+                android:id="@+id/add_product_subtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:alpha="0.5"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                android:text="Take it out to the market."
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toStartOf="@+id/illustration_add_product"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_product_title" />
+
+            <ImageView
+                android:id="@+id/illustration_add_product"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginEnd="16dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/illustration_onboarding2"
+                android:contentDescription="@string/app_name"
+                app:layout_constraintBottom_toBottomOf="@+id/add_product_subtitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/add_product_title" />
+
+            <TextView
+                android:id="@+id/product_category"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/colorEditText"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center_vertical"
+                android:hint="Select Category*"
+                android:includeFontPadding="false"
+                android:paddingStart="12dp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textColorHint="@color/colorTextDark"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/illustration_add_product" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:background="@color/colorIconDark"
+                app:layout_constraintEnd_toEndOf="@+id/product_category"
+                app:layout_constraintStart_toStartOf="@+id/product_category"
+                app:layout_constraintTop_toBottomOf="@+id/product_category" />
+
+            <ImageView
+                android:id="@+id/product_image"
+                android:layout_width="0dp"
+                android:layout_height="260dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
+                android:contentDescription="@string/app_name"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_product_placeholder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view1" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_name"
+                android:theme="@style/TextInputLayoutAppearance"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
+                android:hint="Product name*"
+                android:textColorHint="@color/colorTextDark"
+                app:boxBackgroundColor="@color/colorEditText"
+                app:boxStrokeColor="@color/colorIconDark"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorIconDark"
+                app:errorIconTint="@color/errorColor"
+                app:errorTextColor="@color/errorColor"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/colorTextDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_image">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="true"
+                    android:fontFamily="@font/montserrat"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:importantForAutofill="no"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_unit"
+                android:theme="@style/TextInputLayoutAppearance"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:hint="Unit quantity (eg. 1 kg, 1 L, 500 gm)*"
+                android:textColorHint="@color/colorTextDark"
+                app:boxBackgroundColor="@color/colorEditText"
+                app:boxStrokeColor="@color/colorIconDark"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorIconDark"
+                app:errorIconTint="@color/errorColor"
+                app:errorTextColor="@color/errorColor"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/colorTextDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="true"
+                    android:fontFamily="@font/montserrat"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:importantForAutofill="no"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_mrp"
+                android:theme="@style/TextInputLayoutAppearance"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:hint="MRP*"
+                android:textColorHint="@color/colorTextDark"
+                app:boxBackgroundColor="@color/colorEditText"
+                app:boxStrokeColor="@color/colorIconDark"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorIconDark"
+                app:errorIconTint="@color/errorColor"
+                app:errorTextColor="@color/errorColor"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/colorTextDark"
+                app:prefixText="₹ "
+                app:prefixTextColor="@color/colorInactive"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_unit">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="true"
+                    android:fontFamily="@font/montserrat"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:importantForAutofill="no"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_price"
+                android:theme="@style/TextInputLayoutAppearance"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:hint="Retail Price*"
+                android:textColorHint="@color/colorTextDark"
+                app:boxBackgroundColor="@color/colorEditText"
+                app:boxStrokeColor="@color/colorIconDark"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorIconDark"
+                app:errorIconTint="@color/errorColor"
+                app:errorTextColor="@color/errorColor"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/colorTextDark"
+                app:prefixText="₹ "
+                app:prefixTextColor="@color/colorInactive"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_mrp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="true"
+                    android:fontFamily="@font/montserrat"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:importantForAutofill="no"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/product_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="40dp"
+                android:text="Vegetarian"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorTextDark"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toStartOf="@+id/product_type_switch"
+                app:layout_constraintTop_toBottomOf="@+id/product_price"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/product_type_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:checked="true"
+                app:thumbTint="@color/colorSwitchThumbOpened"
+                app:trackTint="@color/colorSwitchTrackOpened"
+                app:useMaterialThemeColors="false"
+                app:layout_constraintTop_toTopOf="@+id/product_type"
+                app:layout_constraintBottom_toBottomOf="@+id/product_type"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_additional_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginHorizontal="16dp"
+                android:alpha="0.5"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                android:text="Additional Information (optional)"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/product_type"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_description"
+                android:theme="@style/TextInputLayoutAppearance"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp"
+                android:hint="Description"
+                android:textColorHint="@color/colorTextDark"
+                app:boxBackgroundColor="@color/colorEditText"
+                app:boxStrokeColor="@color/colorIconDark"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorIconDark"
+                app:errorIconTint="@color/errorColor"
+                app:errorTextColor="@color/errorColor"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/colorTextDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_additional_info">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="true"
+                    android:fontFamily="@font/montserrat"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="textMultiLine"
+                    android:minLines="7"
+                    android:gravity="top|start"
+                    android:singleLine="false"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:importantForAutofill="no"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_brand"
+                android:theme="@style/TextInputLayoutAppearance"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:hint="Brand"
+                android:textColorHint="@color/colorTextDark"
+                app:boxBackgroundColor="@color/colorEditText"
+                app:boxStrokeColor="@color/colorIconDark"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorIconDark"
+                app:errorIconTint="@color/errorColor"
+                app:errorTextColor="@color/errorColor"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/colorTextDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_description">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="true"
+                    android:fontFamily="@font/montserrat"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:importantForAutofill="no"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_mfg_date"
+                android:theme="@style/TextInputLayoutAppearance"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:hint="Date of MFG."
+                android:textColorHint="@color/colorTextDark"
+                app:boxBackgroundColor="@color/colorEditText"
+                app:boxStrokeColor="@color/colorIconDark"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorIconDark"
+                app:errorIconTint="@color/errorColor"
+                app:errorTextColor="@color/errorColor"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/colorTextDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_brand">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="true"
+                    android:fontFamily="@font/montserrat"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:importantForAutofill="no"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_expiry_date"
+                android:theme="@style/TextInputLayoutAppearance"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:hint="Best before"
+                android:textColorHint="@color/colorTextDark"
+                app:boxBackgroundColor="@color/colorEditText"
+                app:boxStrokeColor="@color/colorIconDark"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorIconDark"
+                app:errorIconTint="@color/errorColor"
+                app:errorTextColor="@color/errorColor"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/colorTextDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_mfg_date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="true"
+                    android:fontFamily="@font/montserrat"
+                    android:imeOptions="actionDone"
+                    android:includeFontPadding="false"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:importantForAutofill="no"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/add_product_btn_container"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="8dp"
+                app:cardPreventCornerOverlap="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_expiry_date">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/add_product_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:includeFontPadding="false"
+                        android:text="Add Product"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="18sp"
+                        android:textStyle="normal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <ProgressBar
+                android:id="@+id/add_product_progress_bar"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:progressTint="@color/colorAccent"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_expiry_date" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
