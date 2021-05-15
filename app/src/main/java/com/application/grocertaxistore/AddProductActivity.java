@@ -13,12 +13,10 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -30,14 +28,13 @@ import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.tapadoo.alerter.Alerter;
 
@@ -51,14 +48,15 @@ import maes.tech.intentanim.CustomIntent;
 
 public class AddProductActivity extends AppCompatActivity {
 
-    private ImageView closeBtn, productImage;
+    private ImageView closeBtn;
+    private RoundedImageView productImage;
     private TextView productCategory, productType;
     private SwitchMaterial productTypeSwitch;
-    private TextInputLayout productName, productUnit, productMRP, productPrice, productDescription,
-            productBrand, productMFGDate, productExpiryDate;
+    private TextInputLayout productName, productUnit, productMRP, productPrice, productUnitsInStock,
+            productDescription, productBrand, productMFGDate, productExpiryDate;
     private CardView addProductBtnContainer;
-    private ConstraintLayout addProductBtn;
-    private ProgressBar addProductProgressBar;
+    private ConstraintLayout layoutContent, layoutNoInternet, retryBtn, addProductBtn;
+    private ProgressBar progressBar;
 
     private StorageReference storageReference;
 
@@ -88,28 +86,48 @@ public class AddProductActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(getColor(R.color.colorBackground));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
-        initViews();
-        initFirebase();
-        setActionOnViews();
-    }
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void initViews() {
+        layoutContent = findViewById(R.id.layout_content);
+        layoutNoInternet = findViewById(R.id.layout_no_internet);
+        retryBtn = findViewById(R.id.retry_btn);
+
         closeBtn = findViewById(R.id.close_btn);
+
         productCategory = findViewById(R.id.product_category);
         productImage = findViewById(R.id.product_image);
         productName = findViewById(R.id.product_name);
+        productType = findViewById(R.id.product_type);
+        productTypeSwitch = findViewById(R.id.product_type_switch);
         productUnit = findViewById(R.id.product_unit);
         productMRP = findViewById(R.id.product_mrp);
         productPrice = findViewById(R.id.product_price);
-        productType = findViewById(R.id.product_type);
-        productTypeSwitch = findViewById(R.id.product_type_switch);
+        productUnitsInStock = findViewById(R.id.product_unit_in_stock);
         productDescription = findViewById(R.id.product_description);
         productBrand = findViewById(R.id.product_brand);
         productMFGDate = findViewById(R.id.product_mfg_date);
         productExpiryDate = findViewById(R.id.product_expiry_date);
+
         addProductBtnContainer = findViewById(R.id.add_product_btn_container);
         addProductBtn = findViewById(R.id.add_product_btn);
-        addProductProgressBar = findViewById(R.id.add_product_progress_bar);
+        progressBar = findViewById(R.id.progress_bar);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkNetworkConnection();
+    }
+
+    private void checkNetworkConnection() {
+        if (!isConnectedToInternet(AddProductActivity.this)) {
+            layoutContent.setVisibility(View.GONE);
+            layoutNoInternet.setVisibility(View.VISIBLE);
+            retryBtn.setOnClickListener(v -> checkNetworkConnection());
+        } else {
+            initFirebase();
+            setActionOnViews();
+        }
     }
 
     private void initFirebase() {
@@ -117,10 +135,14 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     private void setActionOnViews() {
-        closeBtn.setOnClickListener(v -> {
-            onBackPressed();
-            finish();
-        });
+        layoutNoInternet.setVisibility(View.GONE);
+        layoutContent.setVisibility(View.VISIBLE);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        closeBtn.setOnClickListener(v -> onBackPressed());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         KeyboardVisibilityEvent.setEventListener(AddProductActivity.this, isOpen -> {
             if (!isOpen) {
@@ -135,6 +157,8 @@ public class AddProductActivity extends AppCompatActivity {
             }
         });
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         if (!preferenceManager.getString(Constants.KEY_CATEGORY).isEmpty()) {
             productCategory.setText(preferenceManager.getString(Constants.KEY_CATEGORY));
         } else {
@@ -142,11 +166,15 @@ public class AddProductActivity extends AppCompatActivity {
         }
         productCategory.setOnClickListener(v -> showSelectCategoryDialog());
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         productImage.setOnClickListener(v -> selectImage());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         productTypeSwitch.setChecked(true);
         productTypeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked) {
+            if (isChecked) {
                 productTypeSwitch.setThumbTintList(ColorStateList.valueOf(getColor(R.color.colorSwitchThumbOpened)));
                 productTypeSwitch.setTrackTintList(ColorStateList.valueOf(getColor(R.color.colorSwitchTrackOpened)));
                 productType.setText("Vegetarian");
@@ -157,10 +185,12 @@ public class AddProductActivity extends AppCompatActivity {
             }
         });
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         addProductBtn.setOnClickListener(v -> {
             UIUtil.hideKeyboard(AddProductActivity.this);
 
-            if (!validateProductName() | !validateProductUnit() | !validateProductMRP() | !validateProductPrice()) {
+            if (!validateProductName() | !validateProductUnit() | !validateProductMRP() | !validateProductPrice() | !validateProductUnitsInStock()) {
                 return;
             } else {
                 if (productCategory.getText().toString().trim().isEmpty()) {
@@ -184,7 +214,7 @@ public class AddProductActivity extends AppCompatActivity {
                     } else {
                         addProductBtnContainer.setVisibility(View.INVISIBLE);
                         addProductBtn.setEnabled(false);
-                        addProductProgressBar.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.VISIBLE);
 
                         uploadProductDataToFirebase();
                     }
@@ -441,19 +471,41 @@ public class AddProductActivity extends AppCompatActivity {
         }
     }
 
+    private boolean validateProductUnitsInStock() {
+        String productUnitsInStockValue = productUnitsInStock.getEditText().getText().toString().trim();
+
+        if (productUnitsInStockValue.isEmpty()) {
+            productUnitsInStock.setError("How many units you have in the stock?");
+            productUnitsInStock.requestFocus();
+            return false;
+        } else if (productUnitsInStockValue.equals("0")) {
+            productUnitsInStock.setError("Can't have 0 here!");
+            productUnitsInStock.requestFocus();
+            return false;
+        } else {
+            productUnitsInStock.setError(null);
+            productUnitsInStock.setErrorEnabled(false);
+            return true;
+        }
+    }
+
     private void uploadProductDataToFirebase() {
         final String product_store_id = preferenceManager.getString(Constants.KEY_STORE_ID);
         final String product_store_name = preferenceManager.getString(Constants.KEY_STORE_NAME);
         final String product_category = productCategory.getText().toString().trim();
         final String product_name = productName.getEditText().getText().toString().trim();
+        final boolean product_is_veg = productTypeSwitch.isChecked();
         final String product_unit = productUnit.getEditText().getText().toString().trim();
         final String product_mrp = productMRP.getEditText().getText().toString().trim();
         final String product_price = productPrice.getEditText().getText().toString().trim();
-        final boolean product_is_veg = productTypeSwitch.isChecked();
+        final String product_units_in_stock = productUnitsInStock.getEditText().getText().toString().trim();
         final String product_desc = productDescription.getEditText().getText().toString().trim();
         final String product_brand = productBrand.getEditText().getText().toString().trim();
         final String product_mfg_date = productMFGDate.getEditText().getText().toString().trim();
         final String product_expiry_date = productExpiryDate.getEditText().getText().toString().trim();
+
+        float offer = (float) (((Double.parseDouble(product_mrp) - Double.parseDouble(product_price)) / Double.parseDouble(product_mrp)) * 100);
+        int product_offer = (int) offer;
 
         Random random = new Random();
         int number1 = random.nextInt(9000) + 1000;
@@ -481,10 +533,12 @@ public class AddProductActivity extends AppCompatActivity {
                                 newProduct.put(Constants.KEY_PRODUCT_IN_STOCK, true);
                                 newProduct.put(Constants.KEY_PRODUCT_IMAGE, product_image);
                                 newProduct.put(Constants.KEY_PRODUCT_NAME, product_name);
+                                newProduct.put(Constants.KEY_PRODUCT_IS_VEG, product_is_veg);
                                 newProduct.put(Constants.KEY_PRODUCT_UNIT, product_unit);
                                 newProduct.put(Constants.KEY_PRODUCT_MRP, Double.parseDouble(product_mrp));
                                 newProduct.put(Constants.KEY_PRODUCT_RETAIL_PRICE, Double.parseDouble(product_price));
-                                newProduct.put(Constants.KEY_PRODUCT_IS_VEG, product_is_veg);
+                                newProduct.put(Constants.KEY_PRODUCT_OFFER, product_offer);
+                                newProduct.put(Constants.KEY_PRODUCT_UNITS_IN_STOCK, Integer.parseInt(product_units_in_stock));
                                 newProduct.put(Constants.KEY_PRODUCT_DESCRIPTION, product_desc);
                                 newProduct.put(Constants.KEY_PRODUCT_BRAND, product_brand);
                                 newProduct.put(Constants.KEY_PRODUCT_MFG_DATE, product_mfg_date);
@@ -550,14 +604,14 @@ public class AddProductActivity extends AppCompatActivity {
                                                                                 .document(product_id)
                                                                                 .set(newProduct)
                                                                                 .addOnSuccessListener(aVoid111 -> {
-                                                                                    addProductProgressBar.setVisibility(View.GONE);
+                                                                                    progressBar.setVisibility(View.GONE);
                                                                                     addProductBtnContainer.setVisibility(View.VISIBLE);
                                                                                     addProductBtn.setEnabled(true);
 
                                                                                     onBackPressed();
                                                                                     finish();
                                                                                 }).addOnFailureListener(e -> {
-                                                                                    addProductProgressBar.setVisibility(View.GONE);
+                                                                                    progressBar.setVisibility(View.GONE);
                                                                                     addProductBtnContainer.setVisibility(View.VISIBLE);
                                                                                     addProductBtn.setEnabled(true);
 
@@ -575,7 +629,7 @@ public class AddProductActivity extends AppCompatActivity {
                                                                                             .show();
                                                                                     return;
                                                                                 })).addOnFailureListener(e -> {
-                                                                            addProductProgressBar.setVisibility(View.GONE);
+                                                                            progressBar.setVisibility(View.GONE);
                                                                             addProductBtnContainer.setVisibility(View.VISIBLE);
                                                                             addProductBtn.setEnabled(true);
 
@@ -593,7 +647,7 @@ public class AddProductActivity extends AppCompatActivity {
                                                                                     .show();
                                                                             return;
                                                                         })).addOnFailureListener(e -> {
-                                                                    addProductProgressBar.setVisibility(View.GONE);
+                                                                    progressBar.setVisibility(View.GONE);
                                                                     addProductBtnContainer.setVisibility(View.VISIBLE);
                                                                     addProductBtn.setEnabled(true);
 
@@ -611,7 +665,25 @@ public class AddProductActivity extends AppCompatActivity {
                                                                             .show();
                                                                     return;
                                                                 })).addOnFailureListener(e -> {
-                                                    addProductProgressBar.setVisibility(View.GONE);
+                                                            progressBar.setVisibility(View.GONE);
+                                                            addProductBtnContainer.setVisibility(View.VISIBLE);
+                                                            addProductBtn.setEnabled(true);
+
+                                                            Alerter.create(AddProductActivity.this)
+                                                                    .setText("Whoa! Something broke. Try again!")
+                                                                    .setTextAppearance(R.style.AlertText)
+                                                                    .setBackgroundColorRes(R.color.errorColor)
+                                                                    .setIcon(R.drawable.ic_error)
+                                                                    .setDuration(3000)
+                                                                    .enableIconPulse(true)
+                                                                    .enableVibration(true)
+                                                                    .disableOutsideTouch()
+                                                                    .enableProgress(true)
+                                                                    .setProgressColorInt(getColor(android.R.color.white))
+                                                                    .show();
+                                                            return;
+                                                        })).addOnFailureListener(e -> {
+                                                    progressBar.setVisibility(View.GONE);
                                                     addProductBtnContainer.setVisibility(View.VISIBLE);
                                                     addProductBtn.setEnabled(true);
 
@@ -629,44 +701,26 @@ public class AddProductActivity extends AppCompatActivity {
                                                             .show();
                                                     return;
                                                 })).addOnFailureListener(e -> {
-                                                    addProductProgressBar.setVisibility(View.GONE);
-                                                    addProductBtnContainer.setVisibility(View.VISIBLE);
-                                                    addProductBtn.setEnabled(true);
+                                    progressBar.setVisibility(View.GONE);
+                                    addProductBtnContainer.setVisibility(View.VISIBLE);
+                                    addProductBtn.setEnabled(true);
 
-                                                    Alerter.create(AddProductActivity.this)
-                                                            .setText("Whoa! Something broke. Try again!")
-                                                            .setTextAppearance(R.style.AlertText)
-                                                            .setBackgroundColorRes(R.color.errorColor)
-                                                            .setIcon(R.drawable.ic_error)
-                                                            .setDuration(3000)
-                                                            .enableIconPulse(true)
-                                                            .enableVibration(true)
-                                                            .disableOutsideTouch()
-                                                            .enableProgress(true)
-                                                            .setProgressColorInt(getColor(android.R.color.white))
-                                                            .show();
-                                                    return;
-                                                })).addOnFailureListener(e -> {
-                                                    addProductProgressBar.setVisibility(View.GONE);
-                                                    addProductBtnContainer.setVisibility(View.VISIBLE);
-                                                    addProductBtn.setEnabled(true);
-
-                                                    Alerter.create(AddProductActivity.this)
-                                                            .setText("Whoa! Something broke. Try again!")
-                                                            .setTextAppearance(R.style.AlertText)
-                                                            .setBackgroundColorRes(R.color.errorColor)
-                                                            .setIcon(R.drawable.ic_error)
-                                                            .setDuration(3000)
-                                                            .enableIconPulse(true)
-                                                            .enableVibration(true)
-                                                            .disableOutsideTouch()
-                                                            .enableProgress(true)
-                                                            .setProgressColorInt(getColor(android.R.color.white))
-                                                            .show();
-                                                    return;
-                                                });
+                                    Alerter.create(AddProductActivity.this)
+                                            .setText("Whoa! Something broke. Try again!")
+                                            .setTextAppearance(R.style.AlertText)
+                                            .setBackgroundColorRes(R.color.errorColor)
+                                            .setIcon(R.drawable.ic_error)
+                                            .setDuration(3000)
+                                            .enableIconPulse(true)
+                                            .enableVibration(true)
+                                            .disableOutsideTouch()
+                                            .enableProgress(true)
+                                            .setProgressColorInt(getColor(android.R.color.white))
+                                            .show();
+                                    return;
+                                });
                             }).addOnFailureListener(e -> {
-                                addProductProgressBar.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
                                 addProductBtnContainer.setVisibility(View.VISIBLE);
                                 addProductBtn.setEnabled(true);
 
@@ -684,7 +738,7 @@ public class AddProductActivity extends AppCompatActivity {
                                         .show();
                                 return;
                             })).addOnFailureListener(e -> {
-                addProductProgressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 addProductBtnContainer.setVisibility(View.VISIBLE);
                 addProductBtn.setEnabled(true);
 
@@ -703,7 +757,7 @@ public class AddProductActivity extends AppCompatActivity {
                 return;
             });
         } else {
-            addProductProgressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
             addProductBtnContainer.setVisibility(View.VISIBLE);
             addProductBtn.setEnabled(true);
 
@@ -724,13 +778,16 @@ public class AddProductActivity extends AppCompatActivity {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     private boolean isConnectedToInternet(AddProductActivity addProductActivity) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) addProductActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) addProductActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        if ((wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected())) {
+        if (null != networkInfo &&
+                (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)) {
             return true;
         } else {
             return false;
@@ -754,6 +811,12 @@ public class AddProductActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
         CustomIntent.customType(AddProductActivity.this, "up-to-bottom");
     }
 }

@@ -1,10 +1,5 @@
 package com.application.grocertaxistore;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -18,18 +13,19 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.application.grocertaxistore.Utilities.Constants;
 import com.application.grocertaxistore.Utilities.PreferenceManager;
 import com.chaos.view.PinView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -42,7 +38,6 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.tapadoo.alerter.Alerter;
 
@@ -63,14 +58,14 @@ public class VerifyOTPActivity extends AppCompatActivity {
     private PinView otpPinView;
     private ConstraintLayout verifyBtn;
     private CardView verifyBtnContainer;
-    private ProgressBar verifyOtpProgressBar;
+    private ProgressBar progressBar;
 
     private FirebaseAuth firebaseAuth;
     private CollectionReference storeRef;
     private StorageReference storageReference;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
 
-    private String storeID, storeName, ownerName, email, mobile, password, address, totalTime, deliveryCharges, image;
+    private String storeID, image, storeName, ownerName, email, mobile, password, totalTime, minimumOrderAmount;
     private String codeBySystem;
     private Timer timer;
     private int count = 60;
@@ -103,9 +98,8 @@ public class VerifyOTPActivity extends AppCompatActivity {
         email = intent.getStringExtra("email");
         mobile = intent.getStringExtra("mobile");
         password = intent.getStringExtra("password");
-        address = intent.getStringExtra("address");
         totalTime = intent.getStringExtra("total_time");
-        deliveryCharges = intent.getStringExtra("delivery_charges");
+        minimumOrderAmount = intent.getStringExtra("min_order_amount");
         image = intent.getStringExtra("image");
 
         initViews();
@@ -128,7 +122,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
         otpPinView = findViewById(R.id.verify_otp_pinview);
         verifyBtn = findViewById(R.id.verify_btn);
         verifyBtnContainer = findViewById(R.id.verify_btn_container);
-        verifyOtpProgressBar = findViewById(R.id.verify_otp_progress_bar);
+        progressBar = findViewById(R.id.progress_bar);
     }
 
     private void initFirebase() {
@@ -142,7 +136,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
     private void setActionOnViews() {
         closeBtn.setOnClickListener(v -> onBackPressed());
 
-        verifyOtpSubtitle.setText(String.format("Enter below the verification code (OTP) sent to %s.", mobile));
+        verifyOtpSubtitle.setText(String.format("Enter below the One Time Password\nsent to %s.", mobile));
 
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -151,7 +145,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                 VerifyOTPActivity.this.runOnUiThread(() -> {
                     if (count == 0) {
                         resendOtpBtn.setText("Resend OTP");
-                        resendOtpBtn.setAlpha(1.0f);
+                        resendOtpBtn.setTextColor(getColor(R.color.colorAccent));
                         resendOtpBtn.setEnabled(true);
                         resendOtpBtn.setOnClickListener(v -> {
                             if (!isConnectedToInternet(VerifyOTPActivity.this)) {
@@ -166,7 +160,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                         });
                     } else {
                         resendOtpBtn.setText(String.format("Resend OTP in %d", count));
-                        resendOtpBtn.setAlpha(0.5f);
+                        resendOtpBtn.setTextColor(getColor(R.color.colorInactive));
                         resendOtpBtn.setEnabled(false);
                         count--;
                     }
@@ -175,12 +169,12 @@ public class VerifyOTPActivity extends AppCompatActivity {
         }, 0, 1000);
 
         verifyBtn.setOnClickListener(view -> {
-            if(!isConnectedToInternet(VerifyOTPActivity.this)) {
+            if (!isConnectedToInternet(VerifyOTPActivity.this)) {
                 showConnectToInternetDialog();
                 return;
             } else {
-                if(String.valueOf(otpPinView.getText()).isEmpty() || String.valueOf(otpPinView.getText()).length() != 6) {
-                    verifyOtpProgressBar.setVisibility(View.INVISIBLE);
+                if (String.valueOf(otpPinView.getText()).isEmpty() || String.valueOf(otpPinView.getText()).length() != 6) {
+                    progressBar.setVisibility(View.INVISIBLE);
                     verifyBtnContainer.setVisibility(View.VISIBLE);
                     verifyBtn.setEnabled(true);
 
@@ -227,7 +221,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                 @Override
                 public void onVerificationFailed(@NonNull FirebaseException e) {
                     if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                        verifyOtpProgressBar.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
                         verifyBtnContainer.setVisibility(View.VISIBLE);
                         verifyBtn.setEnabled(true);
 
@@ -245,7 +239,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                 .show();
                         return;
                     } else if (e instanceof FirebaseTooManyRequestsException) {
-                        verifyOtpProgressBar.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
                         verifyBtnContainer.setVisibility(View.VISIBLE);
                         verifyBtn.setEnabled(true);
 
@@ -292,7 +286,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
     private void verifyCode(String code) {
         verifyBtnContainer.setVisibility(View.INVISIBLE);
         verifyBtn.setEnabled(false);
-        verifyOtpProgressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeBySystem, code);
         signInUsingCredential(credential);
     }
@@ -321,49 +315,54 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                                         newStore.put(Constants.KEY_UID, user.getUid());
                                                         newStore.put(Constants.KEY_STORE_ID, storeID);
                                                         newStore.put(Constants.KEY_STORE_TIMESTAMP, FieldValue.serverTimestamp());
+                                                        newStore.put(Constants.KEY_STORE_IMAGE, imageValue);
                                                         newStore.put(Constants.KEY_STORE_NAME, storeName);
                                                         newStore.put(Constants.KEY_STORE_OWNER, ownerName);
                                                         newStore.put(Constants.KEY_STORE_EMAIL, email);
                                                         newStore.put(Constants.KEY_STORE_MOBILE, mobile);
-                                                        newStore.put(Constants.KEY_STORE_ADDRESS, address);
+                                                        newStore.put(Constants.KEY_STORE_LOCATION, "");
+                                                        newStore.put(Constants.KEY_STORE_ADDRESS, "");
+                                                        newStore.put(Constants.KEY_STORE_LATITUDE, 0);
+                                                        newStore.put(Constants.KEY_STORE_LONGITUDE, 0);
                                                         newStore.put(Constants.KEY_STORE_TIMING, totalTime);
-                                                        newStore.put(Constants.KEY_STORE_DELIVERY_CHARGES, deliveryCharges);
-                                                        newStore.put(Constants.KEY_STORE_IMAGE, imageValue);
+                                                        newStore.put(Constants.KEY_STORE_MINIMUM_ORDER_VALUE, Double.valueOf(minimumOrderAmount));
                                                         newStore.put(Constants.KEY_STORE_STATUS, true);
                                                         newStore.put(Constants.KEY_STORE_AVERAGE_RATING, 0);
-                                                        newStore.put(Constants.KEY_STORE_TOTAL_RATING, 0);
                                                         newStore.put(Constants.KEY_STORE_SEARCH_KEYWORD, storeName.toLowerCase());
 
                                                         storeRef.document(storeID).set(newStore)
                                                                 .addOnSuccessListener(aVoid -> {
                                                                     timer.cancel();
 
-                                                                    verifyOtpProgressBar.setVisibility(View.GONE);
+                                                                    progressBar.setVisibility(View.GONE);
                                                                     verifyBtnContainer.setVisibility(View.VISIBLE);
                                                                     verifyBtn.setEnabled(true);
 
                                                                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                                                     preferenceManager.putString(Constants.KEY_UID, user.getUid());
                                                                     preferenceManager.putString(Constants.KEY_STORE_ID, storeID);
+                                                                    preferenceManager.putString(Constants.KEY_STORE_IMAGE, imageValue);
                                                                     preferenceManager.putString(Constants.KEY_STORE_NAME, storeName);
                                                                     preferenceManager.putString(Constants.KEY_STORE_OWNER, ownerName);
                                                                     preferenceManager.putString(Constants.KEY_STORE_EMAIL, email);
                                                                     preferenceManager.putString(Constants.KEY_STORE_MOBILE, mobile);
-                                                                    preferenceManager.putString(Constants.KEY_STORE_ADDRESS, address);
+                                                                    preferenceManager.putString(Constants.KEY_STORE_LOCATION, "");
+                                                                    preferenceManager.putString(Constants.KEY_STORE_ADDRESS, "");
+                                                                    preferenceManager.putString(Constants.KEY_STORE_LATITUDE, String.valueOf(0));
+                                                                    preferenceManager.putString(Constants.KEY_STORE_LONGITUDE, String.valueOf(0));
                                                                     preferenceManager.putString(Constants.KEY_STORE_TIMING, totalTime);
-                                                                    preferenceManager.putString(Constants.KEY_STORE_DELIVERY_CHARGES, deliveryCharges);
-                                                                    preferenceManager.putString(Constants.KEY_STORE_IMAGE, imageValue);
+                                                                    preferenceManager.putString(Constants.KEY_STORE_MINIMUM_ORDER_VALUE, minimumOrderAmount);
                                                                     preferenceManager.putBoolean(Constants.KEY_STORE_STATUS, true);
                                                                     preferenceManager.putString(Constants.KEY_CITY, preferenceManager.getString(Constants.KEY_CITY));
                                                                     preferenceManager.putString(Constants.KEY_LOCALITY, preferenceManager.getString(Constants.KEY_LOCALITY));
 
-                                                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                                    Intent intent = new Intent(getApplicationContext(), LocationPermissionActivity.class);
                                                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                                     startActivity(intent);
-                                                                    CustomIntent.customType(VerifyOTPActivity.this, "fadein-to-fadeout");
+                                                                    CustomIntent.customType(VerifyOTPActivity.this, "bottom-to-up");
                                                                     finish();
                                                                 }).addOnFailureListener(e -> {
-                                                            verifyOtpProgressBar.setVisibility(View.GONE);
+                                                            progressBar.setVisibility(View.GONE);
                                                             verifyBtnContainer.setVisibility(View.VISIBLE);
                                                             verifyBtn.setEnabled(true);
 
@@ -382,7 +381,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                                             return;
                                                         });
                                                     }).addOnFailureListener(e -> {
-                                                        verifyOtpProgressBar.setVisibility(View.GONE);
+                                                        progressBar.setVisibility(View.GONE);
                                                         verifyBtnContainer.setVisibility(View.VISIBLE);
                                                         verifyBtn.setEnabled(true);
 
@@ -400,7 +399,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                                                 .show();
                                                         return;
                                                     })).addOnFailureListener(e -> {
-                                        verifyOtpProgressBar.setVisibility(View.GONE);
+                                        progressBar.setVisibility(View.GONE);
                                         verifyBtnContainer.setVisibility(View.VISIBLE);
                                         verifyBtn.setEnabled(true);
 
@@ -424,7 +423,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                     finish();
                                 }
                             } else {
-                                verifyOtpProgressBar.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
                                 verifyBtnContainer.setVisibility(View.VISIBLE);
                                 verifyBtn.setEnabled(true);
 
@@ -443,7 +442,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                 return;
                             }
                         }).addOnFailureListener(e -> {
-                            verifyOtpProgressBar.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
                             verifyBtnContainer.setVisibility(View.VISIBLE);
                             verifyBtn.setEnabled(true);
 
@@ -462,7 +461,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                             return;
                         });
                     } else {
-                        verifyOtpProgressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
                         verifyBtnContainer.setVisibility(View.VISIBLE);
                         verifyBtn.setEnabled(true);
 
@@ -482,7 +481,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    verifyOtpProgressBar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                     verifyBtnContainer.setVisibility(View.VISIBLE);
                     verifyBtn.setEnabled(true);
 
@@ -502,13 +501,16 @@ public class VerifyOTPActivity extends AppCompatActivity {
                 });
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     private boolean isConnectedToInternet(VerifyOTPActivity verifyOTPActivity) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) verifyOTPActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) verifyOTPActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        if ((wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected())) {
+        if (null != networkInfo &&
+                (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)) {
             return true;
         } else {
             return false;

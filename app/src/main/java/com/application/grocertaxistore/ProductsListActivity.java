@@ -1,22 +1,14 @@
 package com.application.grocertaxistore;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.paging.PagedList;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,14 +20,22 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.grocertaxistore.Model.Product;
 import com.application.grocertaxistore.Utilities.Constants;
 import com.application.grocertaxistore.Utilities.PreferenceManager;
 import com.baoyz.widget.PullRefreshLayout;
 import com.bumptech.glide.Glide;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.firebase.ui.firestore.paging.LoadingState;
@@ -43,7 +43,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.tapadoo.alerter.Alerter;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
@@ -55,13 +54,14 @@ import maes.tech.intentanim.CustomIntent;
 
 public class ProductsListActivity extends AppCompatActivity {
 
-    private ImageView backBtn, speechToText, illustrationEmpty;
+    private ImageView backBtn, speechToText;
     private EditText inputProductSearch;
     private RecyclerView recyclerProducts;
-    private TextView title, textEmpty;
-    private ProgressBar productsProgressBar;
+    private TextView title;
     private FloatingActionButton addProductBtn;
+    private ConstraintLayout layoutContent, layoutEmpty, layoutNoInternet, retryBtn;
     private PullRefreshLayout pullRefreshLayout;
+    private ShimmerFrameLayout shimmerLayout;
 
     private CollectionReference productsRef;
     private FirestorePagingAdapter<Product, ProductViewHolder> productAdapter;
@@ -88,39 +88,42 @@ public class ProductsListActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(getColor(R.color.colorBackground));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
-        initViews();
-        initFirebase();
-        setActionOnViews();
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
-        loadProducts();
-
-        pullRefreshLayout.setColor(getColor(R.color.colorAccent));
-        pullRefreshLayout.setOnRefreshListener(() -> {
-            if(!isConnectedToInternet(ProductsListActivity.this)) {
-                pullRefreshLayout.setRefreshing(false);
-                showConnectToInternetDialog();
-                return;
-            } else {
-                loadProducts();
-            }
-        });
-    }
-
-    private void initViews() {
         backBtn = findViewById(R.id.back_btn);
         title = findViewById(R.id.products_list_title);
         speechToText = findViewById(R.id.speech_to_text);
-        illustrationEmpty = findViewById(R.id.illustration_empty);
         inputProductSearch = findViewById(R.id.input_product_search_field);
         recyclerProducts = findViewById(R.id.recycler_products);
-        textEmpty = findViewById(R.id.text_empty);
-        productsProgressBar = findViewById(R.id.products_progress_bar);
         addProductBtn = findViewById(R.id.add_product_btn);
         pullRefreshLayout = findViewById(R.id.pull_refresh_layout);
+        shimmerLayout = findViewById(R.id.shimmer_layout);
+        layoutContent = findViewById(R.id.layout_content);
+        layoutEmpty = findViewById(R.id.layout_empty);
+        layoutNoInternet = findViewById(R.id.layout_no_internet);
+        retryBtn = findViewById(R.id.retry_btn);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkNetworkConnection();
+    }
+
+    private void checkNetworkConnection() {
+        if (!isConnectedToInternet(ProductsListActivity.this)) {
+            layoutContent.setVisibility(View.GONE);
+            layoutEmpty.setVisibility(View.GONE);
+            layoutNoInternet.setVisibility(View.VISIBLE);
+            retryBtn.setOnClickListener(v -> checkNetworkConnection());
+        } else {
+            initFirebase();
+            setActionOnViews();
+        }
     }
 
     private void initFirebase() {
-        if(preferenceManager.getString(Constants.KEY_CATEGORY).isEmpty() || preferenceManager.getString(Constants.KEY_CATEGORY).equals("")) {
+        if (preferenceManager.getString(Constants.KEY_CATEGORY).isEmpty() || preferenceManager.getString(Constants.KEY_CATEGORY).equals("")) {
             productsRef = FirebaseFirestore.getInstance()
                     .collection(Constants.KEY_COLLECTION_CITIES)
                     .document(preferenceManager.getString(Constants.KEY_CITY))
@@ -144,27 +147,45 @@ public class ProductsListActivity extends AppCompatActivity {
     }
 
     private void setActionOnViews() {
-        backBtn.setOnClickListener(v -> {
-            onBackPressed();
-            finish();
-        });
+        layoutNoInternet.setVisibility(View.GONE);
+        layoutContent.setVisibility(View.VISIBLE);
+        layoutEmpty.setVisibility(View.GONE);
+
+        pullRefreshLayout.setRefreshing(false);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        pullRefreshLayout.setColor(getColor(R.color.colorAccent));
+        pullRefreshLayout.setBackgroundColor(getColor(R.color.colorBackground));
+        pullRefreshLayout.setOnRefreshListener(this::checkNetworkConnection);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        backBtn.setOnClickListener(v -> onBackPressed());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         KeyboardVisibilityEvent.setEventListener(ProductsListActivity.this, isOpen -> {
             if (!isOpen) {
                 inputProductSearch.clearFocus();
-                addProductBtn.setVisibility(View.VISIBLE);
-            } else {
-                addProductBtn.setVisibility(View.GONE);
             }
         });
 
-        if(preferenceManager.getString(Constants.KEY_CATEGORY).isEmpty() || preferenceManager.getString(Constants.KEY_CATEGORY).equals("")) {
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        if (preferenceManager.getString(Constants.KEY_CATEGORY).isEmpty() || preferenceManager.getString(Constants.KEY_CATEGORY).equals("")) {
             title.setText("All products");
+            inputProductSearch.setHint("Search products");
         } else {
             title.setText(preferenceManager.getString(Constants.KEY_CATEGORY));
+            inputProductSearch.setHint(String.format("Search in %s", preferenceManager.getString(Constants.KEY_CATEGORY)));
         }
 
-        productsProgressBar.setVisibility(View.VISIBLE);
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        loadProducts();
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         speechToText.setOnClickListener(view -> {
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -192,6 +213,8 @@ public class ProductsListActivity extends AppCompatActivity {
             }
         });
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         inputProductSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -209,7 +232,7 @@ public class ProductsListActivity extends AppCompatActivity {
                 }
 
                 PagedList.Config updatedConfig = new PagedList.Config.Builder()
-                        .setInitialLoadSizeHint(8)
+                        .setInitialLoadSizeHint(4)
                         .setPageSize(4)
                         .build();
 
@@ -226,6 +249,8 @@ public class ProductsListActivity extends AppCompatActivity {
 
             }
         });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         addProductBtn.setOnClickListener(v -> {
             startActivity(new Intent(ProductsListActivity.this, AddProductActivity.class));
@@ -248,14 +273,17 @@ public class ProductsListActivity extends AppCompatActivity {
         }
     }
 
-    private void loadProducts() {
-        Query query = productsRef.orderBy(Constants.KEY_PRODUCT_NAME, Query.Direction.ASCENDING);
+    //////////////////////////////////////// Load Products /////////////////////////////////////////
 
+    private void loadProducts() {
+        shimmerLayout.setVisibility(View.VISIBLE);
+        shimmerLayout.startShimmer();
+
+        Query query = productsRef.orderBy(Constants.KEY_PRODUCT_NAME, Query.Direction.ASCENDING);
         PagedList.Config config = new PagedList.Config.Builder()
-                .setInitialLoadSizeHint(8)
+                .setInitialLoadSizeHint(4)
                 .setPageSize(4)
                 .build();
-
         FirestorePagingOptions<Product> options = new FirestorePagingOptions.Builder<Product>()
                 .setLifecycleOwner(ProductsListActivity.this)
                 .setQuery(query, config, Product.class)
@@ -266,13 +294,16 @@ public class ProductsListActivity extends AppCompatActivity {
             @NonNull
             @Override
             public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_product_item, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_product, parent, false);
                 return new ProductViewHolder(view);
             }
 
             @Override
             protected void onBindViewHolder(@NonNull ProductViewHolder holder, int position, @NonNull Product model) {
-                Glide.with(holder.productImage.getContext()).load(model.getProductImage()).centerCrop().into(holder.productImage);
+                Glide.with(holder.productImage.getContext()).load(model.getProductImage())
+                        .placeholder(R.drawable.thumbnail).centerCrop().into(holder.productImage);
+
+                ////////////////////////////////////////////////////////////////////////////////////
 
                 if (model.getProductCategory().equals("Baby Care") || model.getProductCategory().equals("Household") ||
                         model.getProductCategory().equals("Personal Care") || model.getProductCategory().equals("Stationary") ||
@@ -287,36 +318,74 @@ public class ProductsListActivity extends AppCompatActivity {
                     }
                 }
 
+                ////////////////////////////////////////////////////////////////////////////////////
+
                 holder.productName.setText(model.getProductName());
+                holder.productUnit.setText(model.getProductUnit());
+                holder.productCategory.setText(model.getProductCategory());
                 holder.productPrice.setText(String.format("₹ %s", model.getProductRetailPrice()));
 
-                if (model.getProductRetailPrice() == model.getProductMRP()) {
+                ////////////////////////////////////////////////////////////////////////////////////
+
+                if (model.getProductOffer() == 0) {
                     holder.productMRP.setVisibility(View.GONE);
                     holder.productOffer.setVisibility(View.GONE);
                 } else {
                     holder.productMRP.setText(String.format("₹ %s", model.getProductMRP()));
                     holder.productMRP.setPaintFlags(holder.productMRP.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    float offer = (float) (((model.getProductMRP() - model.getProductRetailPrice()) / model.getProductMRP()) * 100);
-                    String offer_value = ((int) offer) + "% off";
-                    holder.productOffer.setText(offer_value);
+                    holder.productOffer.setText(String.format("%d%% OFF", model.getProductOffer()));
                 }
 
-                holder.productUnit.setText(String.format("for %s", model.getProductUnit()));
-                holder.productCategory.setText(model.getProductCategory());
+                ////////////////////////////////////////////////////////////////////////////////////
 
                 if (model.isProductInStock()) {
-                    holder.productInStock.setText("In Stock");
-                    holder.productInStock.setTextColor(getColor(R.color.successColor));
+                    holder.productImage.clearColorFilter();
+
+                    holder.productOffer.setVisibility(View.VISIBLE);
+
+                    holder.productStatus.setText("In Stock");
+                    holder.productStatus.setTextColor(getColor(R.color.successColor));
+
+                    holder.productUnitInStock.setVisibility(View.VISIBLE);
+                    if (model.getProductUnitsInStock() == 1) {
+                        holder.productUnitInStock.setText(String.format("(%d unit in stock)", model.getProductUnitsInStock()));
+                    } else if (model.getProductUnitsInStock() > 1) {
+                        holder.productUnitInStock.setText(String.format("(%d units in stock)", model.getProductUnitsInStock()));
+                    }
                 } else {
-                    holder.productInStock.setText("Out of Stock");
-                    holder.productInStock.setTextColor(getColor(R.color.errorColor));
+                    ColorMatrix matrix = new ColorMatrix();
+                    matrix.setSaturation(0);
+                    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                    holder.productImage.setColorFilter(filter);
+
+                    holder.productOffer.setVisibility(View.GONE);
+
+                    holder.productStatus.setText("Out of Stock");
+                    holder.productStatus.setTextColor(getColor(R.color.errorColor));
+
+                    holder.productUnitInStock.setVisibility(View.GONE);
                 }
 
-                holder.clickListener.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                ////////////////////////////////////////////////////////////////////////////////////
 
-                    }
+                holder.clickListener.setOnClickListener(v -> {
+                    preferenceManager.putString(Constants.KEY_PRODUCT_ID, model.getProductID());
+                    preferenceManager.putString(Constants.KEY_PRODUCT_CATEGORY, model.getProductCategory());
+                    preferenceManager.putBoolean(Constants.KEY_PRODUCT_IN_STOCK, model.isProductInStock());
+                    preferenceManager.putString(Constants.KEY_PRODUCT_IMAGE, model.getProductImage());
+                    preferenceManager.putString(Constants.KEY_PRODUCT_NAME, model.getProductName());
+                    preferenceManager.putBoolean(Constants.KEY_PRODUCT_IS_VEG, model.isProductIsVeg());
+                    preferenceManager.putString(Constants.KEY_PRODUCT_UNIT, model.getProductUnit());
+                    preferenceManager.putString(Constants.KEY_PRODUCT_MRP, String.valueOf(model.getProductMRP()));
+                    preferenceManager.putString(Constants.KEY_PRODUCT_RETAIL_PRICE, String.valueOf(model.getProductRetailPrice()));
+                    preferenceManager.putString(Constants.KEY_PRODUCT_UNITS_IN_STOCK, String.valueOf(model.getProductUnitsInStock()));
+                    preferenceManager.putString(Constants.KEY_PRODUCT_DESCRIPTION, model.getProductDescription());
+                    preferenceManager.putString(Constants.KEY_PRODUCT_BRAND, model.getProductBrand());
+                    preferenceManager.putString(Constants.KEY_PRODUCT_MFG_DATE, model.getProductMFGDate());
+                    preferenceManager.putString(Constants.KEY_PRODUCT_EXPIRY_TIME, model.getProductExpiryTime());
+
+                    startActivity(new Intent(ProductsListActivity.this, UpdateProductActivity.class));
+                    CustomIntent.customType(ProductsListActivity.this, "bottom-to-up");
                 });
 
                 setAnimation(holder.itemView, position);
@@ -340,25 +409,24 @@ public class ProductsListActivity extends AppCompatActivity {
                 switch (state) {
                     case LOADING_INITIAL:
                     case LOADING_MORE:
-                        productsProgressBar.setVisibility(View.VISIBLE);
-                        illustrationEmpty.setVisibility(View.GONE);
-                        textEmpty.setVisibility(View.GONE);
+                        pullRefreshLayout.setRefreshing(false);
                         break;
                     case LOADED:
                     case FINISHED:
                         pullRefreshLayout.setRefreshing(false);
-                        productsProgressBar.setVisibility(View.GONE);
+                        shimmerLayout.stopShimmer();
+                        shimmerLayout.setVisibility(View.GONE);
 
                         if (getItemCount() == 0) {
-                            illustrationEmpty.setVisibility(View.VISIBLE);
-                            textEmpty.setVisibility(View.VISIBLE);
+                            layoutEmpty.setVisibility(View.VISIBLE);
                         } else {
-                            illustrationEmpty.setVisibility(View.GONE);
-                            textEmpty.setVisibility(View.GONE);
+                            layoutEmpty.setVisibility(View.GONE);
                         }
                         break;
                     case ERROR:
                         pullRefreshLayout.setRefreshing(false);
+                        shimmerLayout.stopShimmer();
+                        shimmerLayout.setVisibility(View.GONE);
                         Alerter.create(ProductsListActivity.this)
                                 .setText("Whoa! Something Broke. Try again!")
                                 .setTextAppearance(R.style.AlertText)
@@ -383,12 +451,14 @@ public class ProductsListActivity extends AppCompatActivity {
         recyclerProducts.setAdapter(productAdapter);
     }
 
+    ////////////////////////////////////// ProductViewHolder ///////////////////////////////////////
+
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
         ConstraintLayout clickListener;
         ImageView productImage, productTypeImage;
         TextView productName, productPrice, productMRP, productOffer,
-                productUnit, productCategory, productInStock;
+                productUnit, productCategory, productStatus, productUnitInStock;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -402,40 +472,36 @@ public class ProductsListActivity extends AppCompatActivity {
             productOffer = itemView.findViewById(R.id.product_offer);
             productUnit = itemView.findViewById(R.id.product_unit);
             productCategory = itemView.findViewById(R.id.product_category);
-            productInStock = itemView.findViewById(R.id.product_in_stock);
+            productStatus = itemView.findViewById(R.id.product_status);
+            productUnitInStock = itemView.findViewById(R.id.product_unit_in_stock);
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     private boolean isConnectedToInternet(ProductsListActivity productsListActivity) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) productsListActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) productsListActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        if ((wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected())) {
+        if (null != networkInfo &&
+                (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)) {
             return true;
         } else {
             return false;
         }
     }
 
-    private void showConnectToInternetDialog() {
-        MaterialDialog materialDialog = new MaterialDialog.Builder(ProductsListActivity.this)
-                .setTitle("No Internet Connection!")
-                .setMessage("Please connect to a network first to proceed from here!")
-                .setCancelable(false)
-                .setAnimation(R.raw.no_internet_connection)
-                .setPositiveButton("Connect", R.drawable.ic_dialog_connect, (dialogInterface, which) -> {
-                    dialogInterface.dismiss();
-                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                })
-                .setNegativeButton("Cancel", R.drawable.ic_dialog_cancel, (dialogInterface, which) -> dialogInterface.dismiss()).build();
-        materialDialog.show();
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
         CustomIntent.customType(ProductsListActivity.this, "right-to-left");
     }
 }

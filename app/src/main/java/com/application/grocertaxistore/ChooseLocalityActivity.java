@@ -1,9 +1,12 @@
 package com.application.grocertaxistore;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
@@ -30,14 +33,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.application.grocertaxistore.Model.Locality;
 import com.application.grocertaxistore.Utilities.Constants;
 import com.application.grocertaxistore.Utilities.PreferenceManager;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.firebase.ui.firestore.paging.LoadingState;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.tapadoo.alerter.Alerter;
 
@@ -57,7 +57,8 @@ public class ChooseLocalityActivity extends AppCompatActivity {
     private GifImageView chooseLocalityGif;
     private EditText inputLocalitySearchField;
     private RecyclerView recyclerLocality;
-    private ProgressBar chooseLocalityProgressBar;
+    private ProgressBar progressBar;
+    private ConstraintLayout layoutContent, layoutNoInternet, retryBtn;
 
     private CollectionReference localitiesRef;
     private FirestorePagingAdapter<Locality, LocalityViewHolder> localityAdapter;
@@ -84,21 +85,36 @@ public class ChooseLocalityActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(getColor(R.color.colorBackground));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
-        initViews();
-        initFirebase();
-        setActionOnViews();
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
-        loadLocalities();
-    }
+        layoutContent = findViewById(R.id.layout_content);
+        layoutNoInternet = findViewById(R.id.layout_no_internet);
+        retryBtn = findViewById(R.id.retry_btn);
 
-    private void initViews() {
         backBtn = findViewById(R.id.back_btn);
         chooseLocalitySubtitle = findViewById(R.id.choose_locality_subtitle);
         chooseLocalityGif = findViewById(R.id.choose_locality_gif);
         inputLocalitySearchField = findViewById(R.id.input_locality_search_field);
         speechToText = findViewById(R.id.speech_to_text);
         recyclerLocality = findViewById(R.id.recycler_locality);
-        chooseLocalityProgressBar = findViewById(R.id.choose_locality_progress_bar);
+        progressBar = findViewById(R.id.progress_bar);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkNetworkConnection();
+    }
+
+    private void checkNetworkConnection() {
+        if (!isConnectedToInternet(ChooseLocalityActivity.this)) {
+            layoutContent.setVisibility(View.GONE);
+            layoutNoInternet.setVisibility(View.VISIBLE);
+            retryBtn.setOnClickListener(v -> checkNetworkConnection());
+        } else {
+            initFirebase();
+            setActionOnViews();
+        }
     }
 
     private void initFirebase() {
@@ -108,9 +124,18 @@ public class ChooseLocalityActivity extends AppCompatActivity {
     }
 
     private void setActionOnViews() {
+        layoutNoInternet.setVisibility(View.GONE);
+        layoutContent.setVisibility(View.VISIBLE);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         backBtn.setOnClickListener(view -> onBackPressed());
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         chooseLocalitySubtitle.setText(String.format("Where in %s?", preferenceManager.getString(Constants.KEY_CITY)));
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         KeyboardVisibilityEvent.setEventListener(ChooseLocalityActivity.this, isOpen -> {
             if (!isOpen) {
@@ -118,7 +143,12 @@ public class ChooseLocalityActivity extends AppCompatActivity {
             }
         });
 
-        chooseLocalityProgressBar.setVisibility(View.VISIBLE);
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        loadLocalities();
+        progressBar.setVisibility(View.VISIBLE);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         speechToText.setOnClickListener(view -> {
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -146,6 +176,8 @@ public class ChooseLocalityActivity extends AppCompatActivity {
             }
         });
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         inputLocalitySearchField.setOnFocusChangeListener((view, hasFocus) -> {
             if (hasFocus) {
                 chooseLocalityGif.setForeground(new ColorDrawable(Color.parseColor("#80000000")));
@@ -171,7 +203,7 @@ public class ChooseLocalityActivity extends AppCompatActivity {
                 }
 
                 PagedList.Config updatedConfig = new PagedList.Config.Builder()
-                        .setInitialLoadSizeHint(8)
+                        .setInitialLoadSizeHint(4)
                         .setPageSize(4)
                         .build();
 
@@ -203,14 +235,14 @@ public class ChooseLocalityActivity extends AppCompatActivity {
         }
     }
 
+    //////////////////////////////////////// LoadLocalities ////////////////////////////////////////
+
     private void loadLocalities() {
         Query query = localitiesRef.orderBy("name", Query.Direction.ASCENDING);
-
         PagedList.Config config = new PagedList.Config.Builder()
-                .setInitialLoadSizeHint(8)
+                .setInitialLoadSizeHint(4)
                 .setPageSize(4)
                 .build();
-
         FirestorePagingOptions<Locality> options = new FirestorePagingOptions.Builder<Locality>()
                 .setLifecycleOwner(ChooseLocalityActivity.this)
                 .setQuery(query, config, Locality.class)
@@ -221,7 +253,7 @@ public class ChooseLocalityActivity extends AppCompatActivity {
             @NonNull
             @Override
             public LocalityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_locality_item, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_locality, parent, false);
                 return new LocalityViewHolder(view);
             }
 
@@ -267,13 +299,14 @@ public class ChooseLocalityActivity extends AppCompatActivity {
                 switch (state) {
                     case LOADING_INITIAL:
                     case LOADING_MORE:
-                        chooseLocalityProgressBar.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.VISIBLE);
                         break;
                     case LOADED:
                     case FINISHED:
-                        chooseLocalityProgressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
                         break;
                     case ERROR:
+                        progressBar.setVisibility(View.GONE);
                         Alerter.create(ChooseLocalityActivity.this)
                                 .setText("Whoa! Something Broke. Try again!")
                                 .setTextAppearance(R.style.AlertText)
@@ -298,6 +331,8 @@ public class ChooseLocalityActivity extends AppCompatActivity {
         recyclerLocality.setAdapter(localityAdapter);
     }
 
+    ///////////////////////////////////// LocalityViewHolder ///////////////////////////////////////
+
     public static class LocalityViewHolder extends RecyclerView.ViewHolder {
 
         ConstraintLayout clickListener;
@@ -311,14 +346,25 @@ public class ChooseLocalityActivity extends AppCompatActivity {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private boolean isConnectedToInternet(ChooseLocalityActivity chooseLocalityActivity) {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) chooseLocalityActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (null != networkInfo &&
+                (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         CustomIntent.customType(ChooseLocalityActivity.this, "right-to-left");
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
     }
 }

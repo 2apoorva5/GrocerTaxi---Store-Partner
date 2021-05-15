@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_title"
+        android:orderInCategory="100"
+        android:title="Filter Orders By"
+        android:enabled="false"
+        android:checkable="false" />
+    <item
+        android:id="@+id/menu_all"
+        android:orderInCategory="200"
+        android:title="All" />
+    <item
+        android:id="@+id/menu_placed"
+        android:orderInCategory="300"
+        android:title="Placed" />
+    <item
+        android:id="@+id/menu_processing"
+        android:orderInCategory="400"
+        android:title="Processing" />
+    <item
+        android:id="@+id/menu_packed"
+        android:orderInCategory="500"
+        android:title="Packed" />
+    <item
+        android:id="@+id/menu_out_for_delivery"
+        android:orderInCategory="600"
+        android:title="Out for Delivery" />
+
+</menu>

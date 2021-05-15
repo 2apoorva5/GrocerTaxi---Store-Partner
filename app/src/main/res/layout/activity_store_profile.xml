@@ -28,7 +28,7 @@
             <ImageView
                 android:id="@+id/store_image"
                 android:layout_width="0dp"
-                android:layout_height="300dp"
+                android:layout_height="320dp"
                 android:src="@drawable/img_store_placeholder"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/app_name"
@@ -37,35 +37,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageView
-                android:id="@+id/back_btn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_back"
-                android:contentDescription="@string/app_name"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/colorIconLight" />
-
             <TextView
                 android:id="@+id/store_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="32dp"
-                android:text="ABC General Store"
+                android:text="@string/store_name"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorTextDark"
                 android:textAllCaps="false"
-                android:textSize="24sp"
-                android:textStyle="normal"
-                android:fontFamily="@font/montserrat_bold"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/store_image"
@@ -77,15 +61,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="32dp"
-                android:text="Managed by"
+                android:text="@string/managed_by"
                 android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
+                android:textColor="@color/colorInactive"
                 android:textAllCaps="false"
-                android:textSize="16sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
-                android:alpha="0.5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/store_name"
                 app:layout_constraintStart_toStartOf="parent"/>
@@ -96,12 +79,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
-                android:text="Atul Ranjan"
+                android:text="@string/store_owner"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorTextDark"
                 android:textAllCaps="false"
                 android:textSize="14sp"
                 android:textStyle="normal"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -114,11 +100,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="32dp"
-                android:text="Store Closed"
+                android:text="@string/store_closed"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorTextDark"
                 android:textAllCaps="false"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
@@ -137,233 +123,15 @@
                 app:layout_constraintBottom_toBottomOf="@+id/text_store_status"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
-            <View
-                android:id="@+id/divider1"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="40dp"
-                android:background="@color/colorInactive"
-                app:layout_constraintTop_toBottomOf="@id/text_store_status"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/text_address"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="40dp"
-                android:text="Address"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/montserrat"
-                android:includeFontPadding="false"
-                android:alpha="0.5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider1"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/store_address"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:text="Shop no. 25, XYZ Complex, Near Railway Station, Dhanbad, Jharkhand - 828130"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                android:fontFamily="@font/montserrat"
-                android:includeFontPadding="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_address"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/text_email"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="24dp"
-                android:text="Email"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/montserrat"
-                android:includeFontPadding="false"
-                android:alpha="0.5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/store_address"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/store_email"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:text="abc.generalstore@gmail.com"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                android:fontFamily="@font/montserrat"
-                android:includeFontPadding="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_email"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/text_mobile"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="24dp"
-                android:text="Mobile"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/montserrat"
-                android:includeFontPadding="false"
-                android:alpha="0.5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/store_email"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/store_mobile"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:text="+918809940931"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                android:fontFamily="@font/montserrat"
-                android:includeFontPadding="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_mobile"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <View
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="40dp"
-                android:background="@color/colorInactive"
-                app:layout_constraintTop_toBottomOf="@id/store_mobile"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/text_timing"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="40dp"
-                android:text="Store Timing"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/montserrat"
-                android:includeFontPadding="false"
-                android:alpha="0.5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider2"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/store_timing"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:text="08:00 AM - 09:00 PM"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                android:fontFamily="@font/montserrat"
-                android:includeFontPadding="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_timing"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/text_delivery_charges"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="24dp"
-                android:text="Delivery Charges"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/montserrat"
-                android:includeFontPadding="false"
-                android:alpha="0.5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/store_timing"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/store_delivery_charges"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:text="₹ 150"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                android:fontFamily="@font/montserrat"
-                android:includeFontPadding="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_delivery_charges"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <View
-                android:id="@+id/divider3"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="40dp"
-                android:background="@color/colorInactive"
-                app:layout_constraintTop_toBottomOf="@id/store_delivery_charges"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/view_ratings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/divider3"
+                app:layout_constraintTop_toBottomOf="@id/open_close_switch"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -375,7 +143,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
-                    android:text="Rating &amp; Reviews"
+                    android:text="@string/rating_reviews"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
@@ -393,27 +161,30 @@
                     android:layout_marginEnd="8dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
-                    android:text="4.5"
+                    android:text="@string/xx"
                     android:textAlignment="center"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
                     android:textSize="14sp"
-                    android:textStyle="normal"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/store_rating_bar"
                     app:layout_constraintEnd_toStartOf="@+id/store_rating_bar"
-                    app:layout_constraintTop_toTopOf="@id/store_rating_bar"
-                    app:layout_constraintBottom_toBottomOf="@id/store_rating_bar" />
+                    app:layout_constraintTop_toTopOf="@id/store_rating_bar" />
 
-                <RatingBar
+                <per.wsj.library.AndRatingBar
                     android:id="@+id/store_rating_bar"
-                    style="@style/Widget.AppCompat.RatingBar.Small"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="18dp"
                     android:layout_marginEnd="16dp"
+                    android:rating="3.5"
                     android:numStars="5"
-                    android:progressBackgroundTint="@color/colorInactive"
-                    android:progressTint="@color/colorPrimary"
-                    android:rating="4.5"
                     android:stepSize="0.1"
+                    app:starDrawable="@drawable/ic_rate_active"
+                    app:bgDrawable="@drawable/ic_rate_inactive"
+                    app:starSpacing="2dp"
+                    app:starColor="@color/colorPrimary"
+                    app:subStarColor="@color/colorViews"
+                    app:bgColor="@color/colorViews"
                     app:layout_constraintBottom_toBottomOf="@+id/text_rating"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/text_rating" />
@@ -421,13 +192,215 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
-                android:id="@+id/divider4"
+                android:id="@+id/divider1"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
                 android:background="@color/colorInactive"
                 app:layout_constraintTop_toBottomOf="@id/view_ratings"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="40dp"
+                android:text="@string/address"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorInactive"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider1"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/store_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/sample_address"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorTextDark"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_address"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/email_"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorInactive"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/store_address"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/store_email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/xxxxxxxxxxxx_xxxxx_xxx"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorTextDark"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:ellipsize="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_email"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_mobile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/mobile_"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorInactive"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/store_email"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/store_mobile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/_91xxxxxxxxxx"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorTextDark"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_mobile"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/colorInactive"
+                app:layout_constraintTop_toBottomOf="@id/store_mobile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_timing"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="40dp"
+                android:text="@string/store_timing"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorInactive"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider2"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/store_timing"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/_00_00_am_00_00_pm"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorTextDark"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_timing"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_minimum_order_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/minimum_order_value"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorInactive"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/store_timing"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/minimum_order_amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/_0_00"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorTextDark"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                android:fontFamily="@font/montserrat"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_minimum_order_value"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/colorInactive"
+                app:layout_constraintTop_toBottomOf="@id/minimum_order_amount"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -439,7 +412,7 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/divider4"
+                app:layout_constraintTop_toBottomOf="@id/divider3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -451,7 +424,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
-                    android:text="Manage Orders"
+                    android:text="@string/manage_orders"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
@@ -459,8 +432,21 @@
                     android:textStyle="normal"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/order_indicator"
                     app:layout_constraintBottom_toBottomOf="parent" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/order_indicator"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    app:cardCornerRadius="7dp"
+                    android:visibility="gone"
+                    app:cardPreventCornerOverlap="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -483,7 +469,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
-                    android:text="Manage Products"
+                    android:text="@string/manage_products"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
@@ -497,13 +483,119 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
-                android:id="@+id/divider5"
+                android:id="@+id/divider4"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
                 android:background="@color/colorInactive"
                 app:layout_constraintTop_toBottomOf="@id/manage_products"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/write_us"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider4">
+
+                <TextView
+                    android:id="@+id/text_write_us"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:fontFamily="@font/montserrat"
+                    android:includeFontPadding="false"
+                    android:text="@string/write_to_us"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/rate_us"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/write_us">
+
+                <TextView
+                    android:id="@+id/text_rate_us"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="16dp"
+                    android:fontFamily="@font/montserrat"
+                    android:includeFontPadding="false"
+                    android:text="@string/rate_us_on_google_play"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/invite_friend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rate_us">
+
+                <TextView
+                    android:id="@+id/text_invite_friend"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="16dp"
+                    android:fontFamily="@font/montserrat"
+                    android:includeFontPadding="false"
+                    android:text="@string/invite_a_friend"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/divider5"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/colorInactive"
+                app:layout_constraintTop_toBottomOf="@id/invite_friend"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -527,7 +619,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
-                    android:text="Privacy Policy"
+                    android:text="@string/privacy_policy"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
@@ -559,7 +651,39 @@
                     android:layout_marginHorizontal="16dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
-                    android:text="Terms of Service"
+                    android:text="@string/terms_of_service"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/refund_policy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintTop_toBottomOf="@id/terms_of_service"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:id="@+id/text_refund"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:fontFamily="@font/montserrat"
+                    android:includeFontPadding="false"
+                    android:text="@string/refund_policy"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
@@ -576,10 +700,9 @@
                 android:id="@+id/divider6"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
                 android:background="@color/colorInactive"
-                app:layout_constraintTop_toBottomOf="@id/terms_of_service"
+                app:layout_constraintTop_toBottomOf="@id/refund_policy"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -603,7 +726,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
-                    android:text="App Settings"
+                    android:text="@string/app_settings"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
@@ -634,7 +757,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
-                    android:text="Log Out"
+                    android:text="@string/log_out"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/errorColor"
@@ -665,90 +788,52 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_product_btn"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="48dp"
-        android:src="@drawable/ic_add_product"
-        app:backgroundTint="@color/colorIconDark"
-        app:tint="@color/colorIconLight"
-        app:maxImageSize="32dp"
-        android:elevation="16dp"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bottom_bar_container"
-        app:layout_constraintBottom_toBottomOf="@+id/bottom_bar_container"
-        android:contentDescription="@string/app_name" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bottom_bar_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottom_app_bar"
+            style="@style/Theme.MaterialComponents.Light"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            app:backgroundTint="@color/colorPrimary"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:fabAlignmentMode="center"
+            app:fabCradleMargin="8dp"
+            app:fabCradleRoundedCornerRadius="8dp">
 
-        <ImageView
-            android:id="@+id/bottom_bar"
-            android:layout_width="0dp"
-            android:layout_height="64dp"
-            android:src="@drawable/pattern3"
-            android:scaleType="fitXY"
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:background="@drawable/background_bottom_bar"
+                app:itemIconTint="@drawable/bottom_nav_item_color"
+                app:itemRippleColor="@color/colorPrimary"
+                app:labelVisibilityMode="unlabeled"
+                app:menu="@menu/menu_bottom" />
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_product_btn"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:contentDescription="@string/app_name"
-            android:rotation="180"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:src="@drawable/ic_add_product"
+            app:backgroundTint="@color/colorAccent"
+            app:layout_anchor="@+id/bottom_app_bar"
+            app:maxImageSize="24sp"
+            app:tint="@color/colorIconLight" />
 
-        <ImageView
-            android:id="@+id/bottom_bar_secondary"
-            android:layout_width="0dp"
-            android:layout_height="72dp"
-            android:src="@drawable/pattern3"
-            android:scaleType="fitXY"
-            android:alpha="0.5"
-            android:contentDescription="@string/app_name"
-            android:rotation="180"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <ImageView
-            android:id="@+id/menu_store_dashboard"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_menu_dashboard"
-            android:contentDescription="@string/app_name"
-            app:tint="@color/colorIconDark"
-            android:padding="6dp"
-            android:alpha="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/bottom_bar"/>
-
-        <ImageView
-            android:id="@+id/menu_store_profile"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_menu_profile"
-            android:contentDescription="@string/app_name"
-            app:tint="@color/colorIconDark"
-            android:padding="6dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/bottom_bar"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,25 +4,18 @@ import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,34 +28,31 @@ import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.tapadoo.alerter.Alerter;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Random;
 import java.util.regex.Pattern;
 
 import maes.tech.intentanim.CustomIntent;
 
-public class  SetupStoreActivity extends AppCompatActivity {
+public class SetupStoreActivity extends AppCompatActivity {
 
-    private ImageView closeBtn, storeImage;
-    private TextInputLayout storeName, owner, email, mobile, createPassword,
-            address, landmark, locality, city, pinCode, state, deliveryCharges;
+    private ImageView closeBtn;
+    private RoundedImageView storeImage;
+    private TextInputLayout storeName, owner, email, mobile, createPassword, minimumOrderAmount;
     private CardView completeSetupBtnContainer;
     private ConstraintLayout completeSetupBtn;
-    private ProgressBar setupStoreProgressBar;
+    private ProgressBar progressBar;
     private TextView getInBtn, openingTime, closingTime;
 
     private FirebaseAuth firebaseAuth;
@@ -104,18 +94,12 @@ public class  SetupStoreActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         mobile = findViewById(R.id.mobile);
         createPassword = findViewById(R.id.create_password);
-        address = findViewById(R.id.address);
-        landmark = findViewById(R.id.landmark);
-        locality = findViewById(R.id.locality);
-        city = findViewById(R.id.city);
-        pinCode = findViewById(R.id.pin_code);
-        state = findViewById(R.id.state);
         openingTime = findViewById(R.id.opening_time);
         closingTime = findViewById(R.id.closing_time);
-        deliveryCharges = findViewById(R.id.delivery_charges);
+        minimumOrderAmount = findViewById(R.id.minimum_order_amount);
         completeSetupBtnContainer = findViewById(R.id.complete_setup_btn_container);
         completeSetupBtn = findViewById(R.id.complete_setup_btn);
-        setupStoreProgressBar = findViewById(R.id.setup_store_progress_bar);
+        progressBar = findViewById(R.id.progress_bar);
         getInBtn = findViewById(R.id.get_in_btn);
     }
 
@@ -137,24 +121,10 @@ public class  SetupStoreActivity extends AppCompatActivity {
                 mobile.clearFocus();
                 email.clearFocus();
                 createPassword.clearFocus();
-                address.clearFocus();
-                landmark.clearFocus();
-                locality.clearFocus();
-                city.clearFocus();
-                pinCode.clearFocus();
-                state.clearFocus();
                 openingTime.clearFocus();
                 closingTime.clearFocus();
-                deliveryCharges.clearFocus();
             }
         });
-
-        locality.getEditText().setText(preferenceManager.getString(Constants.KEY_LOCALITY));
-        city.getEditText().setText(preferenceManager.getString(Constants.KEY_CITY));
-        locality.setEndIconActivated(false);
-        city.setEndIconActivated(false);
-        locality.getEditText().setEnabled(false);
-        city.getEditText().setEnabled(false);
 
         storeImage.setOnClickListener(v -> selectImage());
 
@@ -165,9 +135,9 @@ public class  SetupStoreActivity extends AppCompatActivity {
                         openingHour = hourOfDay;
                         openingMinute = minute;
                         Calendar calendar = Calendar.getInstance();
-                        calendar.set(0,0,0, openingHour, openingMinute);
+                        calendar.set(0, 0, 0, openingHour, openingMinute);
                         openingTime.setText(DateFormat.format("hh:mm aa", calendar));
-                    },12,0, false
+                    }, 12, 0, false
             );
             timePickerDialog.updateTime(openingHour, openingMinute);
             timePickerDialog.show();
@@ -180,9 +150,9 @@ public class  SetupStoreActivity extends AppCompatActivity {
                         closingHour = hourOfDay;
                         closingMinute = minute;
                         Calendar calendar = Calendar.getInstance();
-                        calendar.set(0,0,0, closingHour, closingMinute);
+                        calendar.set(0, 0, 0, closingHour, closingMinute);
                         closingTime.setText(DateFormat.format("hh:mm aa", calendar));
-                    },12,0, false
+                    }, 12, 0, false
             );
             timePickerDialog.updateTime(closingHour, closingMinute);
             timePickerDialog.show();
@@ -194,8 +164,8 @@ public class  SetupStoreActivity extends AppCompatActivity {
             final String email_id = email.getEditText().getText().toString().toLowerCase().trim();
             final String mobile_no = mobile.getPrefixText().toString().trim() + mobile.getEditText().getText().toString().trim();
 
-            if (!validateStoreName() | !validateOwnerName() | !validateEmail() | !validateMobile() | !validatePassword()
-            | !validateAddress() | !validatePinCode() | !validateState() | !validateOpeningTime() | !validateClosingTime() | !validateDeliveryCharges()) {
+            if (!validateStoreName() | !validateOwnerName() | !validateEmail() | !validateMobile()
+                    | !validatePassword() | !validateOpeningTime() | !validateClosingTime() | !validateMinimumOrderAmount()) {
                 return;
             } else {
                 if (!isConnectedToInternet(SetupStoreActivity.this)) {
@@ -204,65 +174,65 @@ public class  SetupStoreActivity extends AppCompatActivity {
                 } else {
                     completeSetupBtnContainer.setVisibility(View.INVISIBLE);
                     completeSetupBtn.setEnabled(false);
-                    setupStoreProgressBar.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
 
                     firebaseAuth.fetchSignInMethodsForEmail(email_id)
                             .addOnCompleteListener(task -> {
-                        if(task.isSuccessful()) {
-                            if (task.getResult().getSignInMethods().isEmpty() &&
-                                    task.getResult().getSignInMethods().size() == 0) {
-                                userRef.whereEqualTo(Constants.KEY_USER_MOBILE, mobile_no)
-                                        .get().addOnCompleteListener(task1 -> {
-                                            if(task1.isSuccessful()) {
+                                if (task.isSuccessful()) {
+                                    if (task.getResult().getSignInMethods().isEmpty() &&
+                                            task.getResult().getSignInMethods().size() == 0) {
+                                        userRef.whereEqualTo(Constants.KEY_USER_MOBILE, mobile_no)
+                                                .get().addOnCompleteListener(task1 -> {
+                                            if (task1.isSuccessful()) {
                                                 if (task1.getResult().getDocuments().isEmpty() &&
                                                         task1.getResult().getDocuments().size() == 0) {
                                                     storeRef.whereEqualTo(Constants.KEY_STORE_MOBILE, mobile_no)
                                                             .get().addOnCompleteListener(task2 -> {
-                                                                if(task2.isSuccessful()) {
-                                                                    if (task2.getResult().getDocuments().isEmpty() &&
-                                                                            task2.getResult().getDocuments().size() == 0) {
-                                                                        openVerifyOTP();
-                                                                    } else {
-                                                                        setupStoreProgressBar.setVisibility(View.GONE);
-                                                                        completeSetupBtnContainer.setVisibility(View.VISIBLE);
-                                                                        completeSetupBtn.setEnabled(true);
+                                                        if (task2.isSuccessful()) {
+                                                            if (task2.getResult().getDocuments().isEmpty() &&
+                                                                    task2.getResult().getDocuments().size() == 0) {
+                                                                openVerifyOTP();
+                                                            } else {
+                                                                progressBar.setVisibility(View.GONE);
+                                                                completeSetupBtnContainer.setVisibility(View.VISIBLE);
+                                                                completeSetupBtn.setEnabled(true);
 
-                                                                        YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(mobile);
-                                                                        Alerter.create(SetupStoreActivity.this)
-                                                                                .setText("That mobile has already been registered. Try another!")
-                                                                                .setTextAppearance(R.style.AlertText)
-                                                                                .setBackgroundColorRes(R.color.errorColor)
-                                                                                .setIcon(R.drawable.ic_error)
-                                                                                .setDuration(3000)
-                                                                                .enableIconPulse(true)
-                                                                                .enableVibration(true)
-                                                                                .disableOutsideTouch()
-                                                                                .enableProgress(true)
-                                                                                .setProgressColorInt(getColor(android.R.color.white))
-                                                                                .show();
-                                                                        return;
-                                                                    }
-                                                                } else {
-                                                                    setupStoreProgressBar.setVisibility(View.GONE);
-                                                                    completeSetupBtnContainer.setVisibility(View.VISIBLE);
-                                                                    completeSetupBtn.setEnabled(true);
+                                                                YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(mobile);
+                                                                Alerter.create(SetupStoreActivity.this)
+                                                                        .setText("That mobile has already been registered. Try another!")
+                                                                        .setTextAppearance(R.style.AlertText)
+                                                                        .setBackgroundColorRes(R.color.errorColor)
+                                                                        .setIcon(R.drawable.ic_error)
+                                                                        .setDuration(3000)
+                                                                        .enableIconPulse(true)
+                                                                        .enableVibration(true)
+                                                                        .disableOutsideTouch()
+                                                                        .enableProgress(true)
+                                                                        .setProgressColorInt(getColor(android.R.color.white))
+                                                                        .show();
+                                                                return;
+                                                            }
+                                                        } else {
+                                                            progressBar.setVisibility(View.GONE);
+                                                            completeSetupBtnContainer.setVisibility(View.VISIBLE);
+                                                            completeSetupBtn.setEnabled(true);
 
-                                                                    Alerter.create(SetupStoreActivity.this)
-                                                                            .setText("Whoa! Something broke. Try again!")
-                                                                            .setTextAppearance(R.style.AlertText)
-                                                                            .setBackgroundColorRes(R.color.errorColor)
-                                                                            .setIcon(R.drawable.ic_error)
-                                                                            .setDuration(3000)
-                                                                            .enableIconPulse(true)
-                                                                            .enableVibration(true)
-                                                                            .disableOutsideTouch()
-                                                                            .enableProgress(true)
-                                                                            .setProgressColorInt(getColor(android.R.color.white))
-                                                                            .show();
-                                                                    return;
-                                                                }
-                                                            }).addOnFailureListener(e -> {
-                                                        setupStoreProgressBar.setVisibility(View.GONE);
+                                                            Alerter.create(SetupStoreActivity.this)
+                                                                    .setText("Whoa! Something broke. Try again!")
+                                                                    .setTextAppearance(R.style.AlertText)
+                                                                    .setBackgroundColorRes(R.color.errorColor)
+                                                                    .setIcon(R.drawable.ic_error)
+                                                                    .setDuration(3000)
+                                                                    .enableIconPulse(true)
+                                                                    .enableVibration(true)
+                                                                    .disableOutsideTouch()
+                                                                    .enableProgress(true)
+                                                                    .setProgressColorInt(getColor(android.R.color.white))
+                                                                    .show();
+                                                            return;
+                                                        }
+                                                    }).addOnFailureListener(e -> {
+                                                        progressBar.setVisibility(View.GONE);
                                                         completeSetupBtnContainer.setVisibility(View.VISIBLE);
                                                         completeSetupBtn.setEnabled(true);
 
@@ -281,7 +251,7 @@ public class  SetupStoreActivity extends AppCompatActivity {
                                                         return;
                                                     });
                                                 } else {
-                                                    setupStoreProgressBar.setVisibility(View.GONE);
+                                                    progressBar.setVisibility(View.GONE);
                                                     completeSetupBtnContainer.setVisibility(View.VISIBLE);
                                                     completeSetupBtn.setEnabled(true);
 
@@ -301,7 +271,26 @@ public class  SetupStoreActivity extends AppCompatActivity {
                                                     return;
                                                 }
                                             } else {
-                                            setupStoreProgressBar.setVisibility(View.GONE);
+                                                progressBar.setVisibility(View.GONE);
+                                                completeSetupBtnContainer.setVisibility(View.VISIBLE);
+                                                completeSetupBtn.setEnabled(true);
+
+                                                Alerter.create(SetupStoreActivity.this)
+                                                        .setText("Whoa! Something broke. Try again!")
+                                                        .setTextAppearance(R.style.AlertText)
+                                                        .setBackgroundColorRes(R.color.errorColor)
+                                                        .setIcon(R.drawable.ic_error)
+                                                        .setDuration(3000)
+                                                        .enableIconPulse(true)
+                                                        .enableVibration(true)
+                                                        .disableOutsideTouch()
+                                                        .enableProgress(true)
+                                                        .setProgressColorInt(getColor(android.R.color.white))
+                                                        .show();
+                                                return;
+                                            }
+                                        }).addOnFailureListener(e -> {
+                                            progressBar.setVisibility(View.GONE);
                                             completeSetupBtnContainer.setVisibility(View.VISIBLE);
                                             completeSetupBtn.setEnabled(true);
 
@@ -318,9 +307,29 @@ public class  SetupStoreActivity extends AppCompatActivity {
                                                     .setProgressColorInt(getColor(android.R.color.white))
                                                     .show();
                                             return;
-                                        }
-                                        }).addOnFailureListener(e -> {
-                                    setupStoreProgressBar.setVisibility(View.GONE);
+                                        });
+                                    } else {
+                                        progressBar.setVisibility(View.GONE);
+                                        completeSetupBtnContainer.setVisibility(View.VISIBLE);
+                                        completeSetupBtn.setEnabled(true);
+
+                                        YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(email);
+                                        Alerter.create(SetupStoreActivity.this)
+                                                .setText("That email has already been registered. Try another!")
+                                                .setTextAppearance(R.style.AlertText)
+                                                .setBackgroundColorRes(R.color.errorColor)
+                                                .setIcon(R.drawable.ic_error)
+                                                .setDuration(3000)
+                                                .enableIconPulse(true)
+                                                .enableVibration(true)
+                                                .disableOutsideTouch()
+                                                .enableProgress(true)
+                                                .setProgressColorInt(getColor(android.R.color.white))
+                                                .show();
+                                        return;
+                                    }
+                                } else {
+                                    progressBar.setVisibility(View.GONE);
                                     completeSetupBtnContainer.setVisibility(View.VISIBLE);
                                     completeSetupBtn.setEnabled(true);
 
@@ -337,48 +346,9 @@ public class  SetupStoreActivity extends AppCompatActivity {
                                             .setProgressColorInt(getColor(android.R.color.white))
                                             .show();
                                     return;
-                                });
-                            } else {
-                                setupStoreProgressBar.setVisibility(View.GONE);
-                                completeSetupBtnContainer.setVisibility(View.VISIBLE);
-                                completeSetupBtn.setEnabled(true);
-
-                                YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(email);
-                                Alerter.create(SetupStoreActivity.this)
-                                        .setText("That email has already been registered. Try another!")
-                                        .setTextAppearance(R.style.AlertText)
-                                        .setBackgroundColorRes(R.color.errorColor)
-                                        .setIcon(R.drawable.ic_error)
-                                        .setDuration(3000)
-                                        .enableIconPulse(true)
-                                        .enableVibration(true)
-                                        .disableOutsideTouch()
-                                        .enableProgress(true)
-                                        .setProgressColorInt(getColor(android.R.color.white))
-                                        .show();
-                                return;
-                            }
-                        } else {
-                            setupStoreProgressBar.setVisibility(View.GONE);
-                            completeSetupBtnContainer.setVisibility(View.VISIBLE);
-                            completeSetupBtn.setEnabled(true);
-
-                            Alerter.create(SetupStoreActivity.this)
-                                    .setText("Whoa! Something broke. Try again!")
-                                    .setTextAppearance(R.style.AlertText)
-                                    .setBackgroundColorRes(R.color.errorColor)
-                                    .setIcon(R.drawable.ic_error)
-                                    .setDuration(3000)
-                                    .enableIconPulse(true)
-                                    .enableVibration(true)
-                                    .disableOutsideTouch()
-                                    .enableProgress(true)
-                                    .setProgressColorInt(getColor(android.R.color.white))
-                                    .show();
-                            return;
-                        }
-                    }).addOnFailureListener(e -> {
-                        setupStoreProgressBar.setVisibility(View.GONE);
+                                }
+                            }).addOnFailureListener(e -> {
+                        progressBar.setVisibility(View.GONE);
                         completeSetupBtnContainer.setVisibility(View.VISIBLE);
                         completeSetupBtn.setEnabled(true);
 
@@ -401,7 +371,7 @@ public class  SetupStoreActivity extends AppCompatActivity {
         });
 
         getInBtn.setOnClickListener(view -> {
-            setupStoreProgressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
             completeSetupBtnContainer.setVisibility(View.VISIBLE);
             completeSetupBtn.setEnabled(true);
 
@@ -502,57 +472,11 @@ public class  SetupStoreActivity extends AppCompatActivity {
         }
     }
 
-    private boolean validateAddress() {
-        String full_address = address.getEditText().getText().toString().trim();
-
-        if (full_address.isEmpty()) {
-            address.setError("Enter the address of the store!");
-            address.requestFocus();
-            return false;
-        } else {
-            address.setError(null);
-            address.setErrorEnabled(false);
-            return true;
-        }
-    }
-
-    private boolean validatePinCode() {
-        String pin_code = pinCode.getEditText().getText().toString().trim();
-
-        if (pin_code.isEmpty()) {
-            pinCode.setError("Enter the PIN Code!");
-            pinCode.requestFocus();
-            return false;
-        } else if (pin_code.length() != 6) {
-            pinCode.setError("Invalid PIN Code. Try Again!");
-            pinCode.requestFocus();
-            return false;
-        } else {
-            pinCode.setError(null);
-            pinCode.setErrorEnabled(false);
-            return true;
-        }
-    }
-
-    private boolean validateState() {
-        String state_name = state.getEditText().getText().toString().trim();
-
-        if (state_name.isEmpty()) {
-            state.setError("Enter the state " + preferenceManager.getString(Constants.KEY_CITY) + " is in!");
-            state.requestFocus();
-            return false;
-        } else {
-            state.setError(null);
-            state.setErrorEnabled(false);
-            return true;
-        }
-    }
-
     private boolean validateOpeningTime() {
         String opening_time = openingTime.getText().toString().trim();
 
         if (opening_time.isEmpty()) {
-            setupStoreProgressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
             completeSetupBtnContainer.setVisibility(View.VISIBLE);
             completeSetupBtn.setEnabled(true);
 
@@ -578,7 +502,7 @@ public class  SetupStoreActivity extends AppCompatActivity {
         String closing_time = closingTime.getText().toString().trim();
 
         if (closing_time.isEmpty()) {
-            setupStoreProgressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
             completeSetupBtnContainer.setVisibility(View.VISIBLE);
             completeSetupBtn.setEnabled(true);
 
@@ -600,16 +524,16 @@ public class  SetupStoreActivity extends AppCompatActivity {
         }
     }
 
-    private boolean validateDeliveryCharges() {
-        String delivery_charges = deliveryCharges.getEditText().getText().toString().trim();
+    private boolean validateMinimumOrderAmount() {
+        String min_order_amount = minimumOrderAmount.getEditText().getText().toString().trim();
 
-        if (delivery_charges.isEmpty()) {
-            deliveryCharges.setError("Enter the store's delivery charges - application depends on T&C.");
-            deliveryCharges.requestFocus();
+        if (min_order_amount.isEmpty()) {
+            minimumOrderAmount.setError("Enter a minimum order limit for home delivery!");
+            minimumOrderAmount.requestFocus();
             return false;
         } else {
-            deliveryCharges.setError(null);
-            deliveryCharges.setErrorEnabled(false);
+            minimumOrderAmount.setError(null);
+            minimumOrderAmount.setErrorEnabled(false);
             return true;
         }
     }
@@ -654,18 +578,11 @@ public class  SetupStoreActivity extends AppCompatActivity {
         final String mobile_no = mobile.getPrefixText().toString().trim() + mobile.getEditText().getText().toString().trim();
         final String create_password = createPassword.getEditText().getText().toString().trim();
 
-        final String address_value = address.getEditText().getText().toString().trim();
-        final String landmark_loc = landmark.getEditText().getText().toString().trim();
-        final String locality_name = locality.getEditText().getText().toString().trim();
-        final String city_name = city.getEditText().getText().toString().trim();
-        final String pin_code = pinCode.getEditText().getText().toString().trim();
-        final String state_name = state.getEditText().getText().toString().trim();
-        final String full_address = address_value + ", " + landmark_loc + ", " + city_name + ", " + state_name + " - " + pin_code;
-
         final String opening_time = openingTime.getText().toString().trim();
         final String closing_time = closingTime.getText().toString().trim();
         final String total_time = opening_time + " - " + closing_time;
-        final String delivery_charges = deliveryCharges.getEditText().getText().toString().trim();
+
+        final String min_order_amount = minimumOrderAmount.getEditText().getText().toString().trim();
 
         Random random = new Random();
         int number1 = random.nextInt(9000) + 1000;
@@ -673,7 +590,7 @@ public class  SetupStoreActivity extends AppCompatActivity {
         int number3 = random.nextInt(9000) + 1000;
 
         if (storePicUri != null) {
-            setupStoreProgressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
             completeSetupBtnContainer.setVisibility(View.VISIBLE);
             completeSetupBtn.setEnabled(true);
 
@@ -684,17 +601,14 @@ public class  SetupStoreActivity extends AppCompatActivity {
             intent.putExtra("email", email_id);
             intent.putExtra("mobile", mobile_no);
             intent.putExtra("password", create_password);
-            intent.putExtra("address", full_address);
             intent.putExtra("total_time", total_time);
-            intent.putExtra("delivery_charges", delivery_charges);
+            intent.putExtra("min_order_amount", min_order_amount);
             intent.putExtra("image", storePicUri.toString());
-            preferenceManager.putString(Constants.KEY_CITY, city_name);
-            preferenceManager.putString(Constants.KEY_LOCALITY, locality_name);
             startActivity(intent);
             CustomIntent.customType(SetupStoreActivity.this, "left-to-right");
             finish();
         } else {
-            setupStoreProgressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
             completeSetupBtnContainer.setVisibility(View.VISIBLE);
             completeSetupBtn.setEnabled(true);
 
@@ -714,13 +628,16 @@ public class  SetupStoreActivity extends AppCompatActivity {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     private boolean isConnectedToInternet(SetupStoreActivity setupStoreActivity) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) setupStoreActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) setupStoreActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        if ((wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected())) {
+        if (null != networkInfo &&
+                (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)) {
             return true;
         } else {
             return false;

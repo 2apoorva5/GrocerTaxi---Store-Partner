@@ -1,19 +1,17 @@
 package com.application.grocertaxistore;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.application.grocertaxistore.Adapters.OnBoardingSliderAdapter;
 
@@ -21,12 +19,10 @@ import maes.tech.intentanim.CustomIntent;
 
 public class OnBoardingActivity extends AppCompatActivity {
 
-    private ImageView closeBtn;
+    private TextView skipBtn, textNextBtn;
     private ViewPager sliderViewPager;
     private LinearLayout indicatorsLayout;
-    private TextView getStartedBtn;
     private ConstraintLayout nextBtn;
-    private CardView nextBtnContainer;
 
     int CURRENT_POSITION;
 
@@ -50,18 +46,15 @@ public class OnBoardingActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        closeBtn = findViewById(R.id.close_btn);
+        skipBtn = findViewById(R.id.skip_btn);
         sliderViewPager = findViewById(R.id.view_pager_on_board);
         indicatorsLayout = findViewById(R.id.indicators_layout);
-        getStartedBtn = findViewById(R.id.get_started_btn);
         nextBtn = findViewById(R.id.next_btn);
-        nextBtnContainer = findViewById(R.id.next_btn_container);
+        textNextBtn = findViewById(R.id.text_next_btn);
     }
 
     private void setActionOnViews() {
-        closeBtn.setOnClickListener(view -> onBackPressed());
-
-        getStartedBtn.setOnClickListener(v -> {
+        skipBtn.setOnClickListener(v -> {
             startActivity(new Intent(OnBoardingActivity.this, WelcomeActivity.class));
             CustomIntent.customType(OnBoardingActivity.this, "fadein-to-fadeout");
             finish();
@@ -79,7 +72,7 @@ public class OnBoardingActivity extends AppCompatActivity {
             indicators[i].setText(Html.fromHtml("&#183;"));
             indicators[i].setTextSize(48);
             indicators[i].setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-            indicators[i].setTextColor(getColor(R.color.colorAccent));
+            indicators[i].setTextColor(getColor(R.color.colorViews));
 
             indicatorsLayout.addView(indicators[i]);
         }
@@ -87,7 +80,7 @@ public class OnBoardingActivity extends AppCompatActivity {
         indicators[position].setText(Html.fromHtml("&#183;"));
         indicators[position].setTextSize(48);
         indicators[position].setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        indicators[position].setTextColor(getColor(R.color.colorPrimary));
+        indicators[position].setTextColor(getColor(R.color.colorAccent));
     }
 
     ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -101,14 +94,24 @@ public class OnBoardingActivity extends AppCompatActivity {
             createIndicatorsLayout(position);
             CURRENT_POSITION = position;
             if (position == 0) {
-                nextBtnContainer.setVisibility(View.VISIBLE);
-                nextBtn.setEnabled(true);
+                textNextBtn.setText("NEXT");
+                skipBtn.setVisibility(View.VISIBLE);
+                skipBtn.setEnabled(true);
+                nextBtn.setOnClickListener(v -> sliderViewPager.setCurrentItem(position + 1));
             } else if (position == 1) {
-                nextBtnContainer.setVisibility(View.VISIBLE);
-                nextBtn.setEnabled(true);
+                textNextBtn.setText("NEXT");
+                skipBtn.setVisibility(View.VISIBLE);
+                skipBtn.setEnabled(true);
+                nextBtn.setOnClickListener(v -> sliderViewPager.setCurrentItem(position + 1));
             } else if (position == 2) {
-                nextBtnContainer.setVisibility(View.INVISIBLE);
-                nextBtn.setEnabled(false);
+                textNextBtn.setText("START");
+                skipBtn.setVisibility(View.INVISIBLE);
+                skipBtn.setEnabled(false);
+                nextBtn.setOnClickListener(v -> {
+                    startActivity(new Intent(OnBoardingActivity.this, WelcomeActivity.class));
+                    CustomIntent.customType(OnBoardingActivity.this, "fadein-to-fadeout");
+                    finish();
+                });
             }
         }
 

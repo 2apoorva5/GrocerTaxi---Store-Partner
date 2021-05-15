@@ -18,7 +18,6 @@ import maes.tech.intentanim.CustomIntent;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    private ImageView closeBtn;
     private ConstraintLayout setupStoreBtn, alreadyRegisteredBtn;
 
     private PreferenceManager preferenceManager;
@@ -47,14 +46,11 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        closeBtn = findViewById(R.id.close_btn);
         setupStoreBtn = findViewById(R.id.setup_store_btn);
         alreadyRegisteredBtn = findViewById(R.id.already_registered_btn);
     }
 
     private void setActionOnViews() {
-        closeBtn.setOnClickListener(view -> onBackPressed());
-
         setupStoreBtn.setOnClickListener(view -> {
             preferenceManager.putString(Constants.KEY_SIGNIN_SIGNUP_ACTION, "setUp");
             startActivity(new Intent(WelcomeActivity.this, ChooseCityActivity.class));

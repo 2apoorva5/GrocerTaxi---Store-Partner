@@ -14,22 +14,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.application.grocertaxistore.Utilities.Constants;
 import com.application.grocertaxistore.Utilities.PreferenceManager;
+import com.baoyz.widget.PullRefreshLayout;
 import com.bumptech.glide.Glide;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.tapadoo.alerter.Alerter;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import maes.tech.intentanim.CustomIntent;
 
@@ -37,16 +44,20 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView today, storeName, storeAddress, textStoreStatus;
     private SwitchMaterial openCloseSwitch;
-    private ImageView storeProfileBtn, fruits, vegetables, foodGrains, dairy, bakery, beverages, dryFruits, meatBacon,
+    private ImageView fruits, vegetables, foodGrains, dairy, bakery, beverages, dryFruits, meatBacon,
             noodlesPasta, snacks, kitchenOil, spices, sweets, babyCare, household, personalCare, petCare, stationary,
-            hardware, medical, sports, menuStoreDashboard, menuStoreProfile;
-    private ConstraintLayout manageOrdersBtn, manageProductsBtn, categoryFruits, categoryVegetables, categoryFoodGrains, categoryDairy, categoryBakery, categoryBeverages,
-            categoryDryFruits, categoryMeatBacon, categoryNoodlesPasta, categorySnacks, categoryKitchenOil, categorySpices,
-            categorySweets, categoryBabyCare, categoryHousehold, categoryPersonalCare, categoryPetCare, categoryStationary,
-            categoryHardware, categoryMedical, categorySports;
+            hardware, medical, sports;
+    private ConstraintLayout layoutContent, layoutNoInternet, retryBtn,
+            storeProfileBtn, manageOrdersBtn, manageProductsBtn, cancelRequestsBtn, categoryFruits, categoryVegetables, categoryFoodGrains,
+            categoryDairy, categoryBakery, categoryBeverages, categoryDryFruits, categoryMeatBacon, categoryNoodlesPasta,
+            categorySnacks, categoryKitchenOil, categorySpices, categorySweets, categoryBabyCare, categoryHousehold,
+            categoryPersonalCare, categoryPetCare, categoryStationary, categoryHardware, categoryMedical, categorySports;
+    private BottomNavigationView bottomBar;
     private FloatingActionButton addProductBtn;
+    private CardView orderIndicator, cancelRequestIndicator;
+    private PullRefreshLayout pullRefreshLayout;
 
-    private CollectionReference storeRef;
+    private CollectionReference storeRef, storePendingOrdersRef, cancelRequestsRef;
 
     private PreferenceManager preferenceManager;
 
@@ -63,24 +74,44 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             CustomIntent.customType(MainActivity.this, "fadein-to-fadeout");
             finish();
+        } else {
+            if (preferenceManager.getString(Constants.KEY_STORE_ADDRESS).isEmpty() ||
+                    preferenceManager.getString(Constants.KEY_STORE_ADDRESS).equals("") ||
+                    preferenceManager.getString(Constants.KEY_STORE_ADDRESS).length() == 0 ||
+                    preferenceManager.getString(Constants.KEY_STORE_ADDRESS) == null) {
+                Intent intent = new Intent(getApplicationContext(), LocationPermissionActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                CustomIntent.customType(MainActivity.this, "bottom-to-up");
+                finish();
+            }
         }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().setStatusBarColor(getColor(R.color.colorBackground));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
-        initViews();
-        initFirebase();
-        setActionOnViews();
-    }
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void initViews() {
+        layoutContent = findViewById(R.id.layout_content);
+        layoutNoInternet = findViewById(R.id.layout_no_internet);
+        retryBtn = findViewById(R.id.retry_btn);
+
+        pullRefreshLayout = findViewById(R.id.pull_refresh_layout);
+
         today = findViewById(R.id.today);
-        openCloseSwitch = findViewById(R.id.open_close_switch);
         storeName = findViewById(R.id.store_name);
         storeAddress = findViewById(R.id.store_address);
-        textStoreStatus = findViewById(R.id.text_store_status);
         storeProfileBtn = findViewById(R.id.store_profile_btn);
+        textStoreStatus = findViewById(R.id.text_store_status);
+        openCloseSwitch = findViewById(R.id.open_close_switch);
+
+        manageOrdersBtn = findViewById(R.id.manage_orders_btn);
+        orderIndicator = findViewById(R.id.order_indicator);
+        manageProductsBtn = findViewById(R.id.manage_products_btn);
+        cancelRequestsBtn = findViewById(R.id.cancellation_requests_btn);
+        cancelRequestIndicator = findViewById(R.id.cancel_request_indicator);
+
         fruits = findViewById(R.id.category_fruits_img);
         vegetables = findViewById(R.id.category_vegetables_img);
         foodGrains = findViewById(R.id.category_foodgrains_img);
@@ -102,9 +133,6 @@ public class MainActivity extends AppCompatActivity {
         hardware = findViewById(R.id.category_hardware_img);
         medical = findViewById(R.id.category_medical_img);
         sports = findViewById(R.id.category_sports_img);
-
-        manageOrdersBtn = findViewById(R.id.manage_orders_btn);
-        manageProductsBtn = findViewById(R.id.manage_products_btn);
 
         categoryFruits = findViewById(R.id.category_fruits);
         categoryVegetables = findViewById(R.id.category_vegetables);
@@ -128,9 +156,26 @@ public class MainActivity extends AppCompatActivity {
         categoryMedical = findViewById(R.id.category_medical);
         categorySports = findViewById(R.id.category_sports);
 
-        menuStoreDashboard = findViewById(R.id.menu_store_dashboard);
-        menuStoreProfile = findViewById(R.id.menu_store_profile);
+        bottomBar = findViewById(R.id.bottom_bar);
         addProductBtn = findViewById(R.id.add_product_btn);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkNetworkConnection();
+    }
+
+    private void checkNetworkConnection() {
+        if (!isConnectedToInternet(MainActivity.this)) {
+            layoutContent.setVisibility(View.GONE);
+            layoutNoInternet.setVisibility(View.VISIBLE);
+            retryBtn.setOnClickListener(v -> checkNetworkConnection());
+        } else {
+            initFirebase();
+            sendFCMTokenToDatabase();
+            setActionOnViews();
+        }
     }
 
     private void initFirebase() {
@@ -138,25 +183,77 @@ public class MainActivity extends AppCompatActivity {
                 .document(preferenceManager.getString(Constants.KEY_CITY)).collection(Constants.KEY_COLLECTION_LOCALITIES)
                 .document(preferenceManager.getString(Constants.KEY_LOCALITY)).collection(Constants.KEY_COLLECTION_STORES);
 
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                sendFCMTokenToDatabase(task.getResult().getToken());
-            }
-        });
+        storePendingOrdersRef = FirebaseFirestore.getInstance()
+                .collection(Constants.KEY_COLLECTION_CITIES)
+                .document(preferenceManager.getString(Constants.KEY_CITY))
+                .collection(Constants.KEY_COLLECTION_LOCALITIES)
+                .document(preferenceManager.getString(Constants.KEY_LOCALITY))
+                .collection(Constants.KEY_COLLECTION_STORES)
+                .document(preferenceManager.getString(Constants.KEY_STORE_ID))
+                .collection(Constants.KEY_COLLECTION_PENDING_ORDERS);
+
+        cancelRequestsRef = FirebaseFirestore.getInstance()
+                .collection(Constants.KEY_COLLECTION_CITIES)
+                .document(preferenceManager.getString(Constants.KEY_CITY))
+                .collection(Constants.KEY_COLLECTION_LOCALITIES)
+                .document(preferenceManager.getString(Constants.KEY_LOCALITY))
+                .collection(Constants.KEY_COLLECTION_STORES)
+                .document(preferenceManager.getString(Constants.KEY_STORE_ID))
+                .collection(Constants.KEY_COLLECTION_CANCELLATION_REQUESTS);
+    }
+
+    private void sendFCMTokenToDatabase() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String refreshToken = task.getResult();
+                        HashMap<String, Object> token = new HashMap<>();
+                        token.put(Constants.KEY_STORE_TOKEN, refreshToken);
+
+                        DocumentReference documentReference = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_CITIES)
+                                .document(preferenceManager.getString(Constants.KEY_CITY)).collection(Constants.KEY_COLLECTION_LOCALITIES)
+                                .document(preferenceManager.getString(Constants.KEY_LOCALITY)).collection(Constants.KEY_COLLECTION_STORES)
+                                .document(preferenceManager.getString(Constants.KEY_STORE_ID));
+                        documentReference.set(token, SetOptions.merge())
+                                .addOnSuccessListener(aVoid -> {
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Some ERROR occurred!", Toast.LENGTH_SHORT).show());
+                    } else {
+                        Toast.makeText(MainActivity.this, "Some ERROR occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void setActionOnViews() {
+        layoutNoInternet.setVisibility(View.GONE);
+        layoutContent.setVisibility(View.VISIBLE);
+        pullRefreshLayout.setRefreshing(false);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        pullRefreshLayout.setColor(getColor(R.color.colorAccent));
+        pullRefreshLayout.setBackgroundColor(getColor(R.color.colorBackground));
+        pullRefreshLayout.setOnRefreshListener(this::checkNetworkConnection);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         Calendar calendar = Calendar.getInstance();
         String currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
         today.setText(currentDate);
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         storeName.setText(preferenceManager.getString(Constants.KEY_STORE_NAME));
         storeAddress.setText(preferenceManager.getString(Constants.KEY_STORE_ADDRESS));
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         storeProfileBtn.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, StoreProfileActivity.class));
             CustomIntent.customType(MainActivity.this, "fadein-to-fadeout");
         });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         openCloseSwitch.setChecked(preferenceManager.getBoolean(Constants.KEY_STORE_STATUS));
 
@@ -229,15 +326,80 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        manageOrdersBtn.setOnClickListener(v -> {
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
+        storePendingOrdersRef.whereEqualTo(Constants.KEY_ORDER_STATUS, "Placed")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.size() == 0) {
+                        orderIndicator.setVisibility(View.GONE);
+                    } else {
+                        orderIndicator.setVisibility(View.VISIBLE);
+                        YoYo.with(Techniques.Pulse).duration(700).repeat(3).playOn(orderIndicator);
+                    }
+                }).addOnFailureListener(e -> {
+            Alerter.create(MainActivity.this)
+                    .setText("Whoa! Something Broke. Try again!")
+                    .setTextAppearance(R.style.AlertText)
+                    .setBackgroundColorRes(R.color.errorColor)
+                    .setIcon(R.drawable.ic_error)
+                    .setDuration(3000)
+                    .enableIconPulse(true)
+                    .enableVibration(true)
+                    .disableOutsideTouch()
+                    .enableProgress(true)
+                    .setProgressColorInt(getColor(android.R.color.white))
+                    .show();
         });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        manageOrdersBtn.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, OrdersActivity.class));
+            CustomIntent.customType(MainActivity.this, "left-to-right");
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         manageProductsBtn.setOnClickListener(v -> {
             preferenceManager.putString(Constants.KEY_CATEGORY, "");
             startActivity(new Intent(MainActivity.this, ProductsListActivity.class));
             CustomIntent.customType(MainActivity.this, "left-to-right");
         });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        cancelRequestsRef.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.size() == 0) {
+                        cancelRequestIndicator.setVisibility(View.GONE);
+                    } else {
+                        cancelRequestIndicator.setVisibility(View.VISIBLE);
+                        YoYo.with(Techniques.Pulse).duration(700).repeat(3).playOn(cancelRequestIndicator);
+                    }
+                }).addOnFailureListener(e -> {
+            Alerter.create(MainActivity.this)
+                    .setText("Whoa! Something Broke. Try again!")
+                    .setTextAppearance(R.style.AlertText)
+                    .setBackgroundColorRes(R.color.errorColor)
+                    .setIcon(R.drawable.ic_error)
+                    .setDuration(3000)
+                    .enableIconPulse(true)
+                    .enableVibration(true)
+                    .disableOutsideTouch()
+                    .enableProgress(true)
+                    .setProgressColorInt(getColor(android.R.color.white))
+                    .show();
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        cancelRequestsBtn.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, CancellationRequestsActivity.class));
+            CustomIntent.customType(MainActivity.this, "bottom-to-up");
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         String cat_fruits = "https://firebasestorage.googleapis.com/v0/b/grocer-taxi.appspot.com/o/Categories%2Ffruits.png?alt=media&token=e682c6a7-16fe-47f1-b607-89b9b888b5d3";
         String cat_vegetables = "https://firebasestorage.googleapis.com/v0/b/grocer-taxi.appspot.com/o/Categories%2Fvegetables.png?alt=media&token=5794ffa7-f88e-4477-9068-cd1d9ab4b247";
@@ -430,14 +592,22 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        menuStoreDashboard.setOnClickListener(view -> {
-            return;
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        bottomBar.setSelectedItemId(R.id.menu_dashboard);
+        bottomBar.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_dashboard:
+                    break;
+                case R.id.menu_profile:
+                    startActivity(new Intent(MainActivity.this, StoreProfileActivity.class));
+                    CustomIntent.customType(MainActivity.this, "fadein-to-fadeout");
+                    break;
+            }
+            return true;
         });
 
-        menuStoreProfile.setOnClickListener(view -> {
-            startActivity(new Intent(MainActivity.this, StoreProfileActivity.class));
-            CustomIntent.customType(MainActivity.this, "fadein-to-fadeout");
-        });
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         addProductBtn.setOnClickListener(v -> {
             preferenceManager.putString(Constants.KEY_CATEGORY, "");
@@ -446,26 +616,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void sendFCMTokenToDatabase(String token) {
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        DocumentReference documentReference = firebaseFirestore.collection(Constants.KEY_COLLECTION_CITIES)
-                .document(preferenceManager.getString(Constants.KEY_CITY)).collection(Constants.KEY_COLLECTION_LOCALITIES)
-                .document(preferenceManager.getString(Constants.KEY_LOCALITY)).collection(Constants.KEY_COLLECTION_STORES)
-                .document(preferenceManager.getString(Constants.KEY_STORE_ID));
-
-        documentReference.update(Constants.KEY_FCM_TOKEN, token)
-                .addOnSuccessListener(aVoid -> {
-                })
-                .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Some ERROR occurred!", Toast.LENGTH_SHORT).show());
-    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     private boolean isConnectedToInternet(MainActivity mainActivity) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        if ((wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected())) {
+        if (null != networkInfo &&
+                (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)) {
             return true;
         } else {
             return false;

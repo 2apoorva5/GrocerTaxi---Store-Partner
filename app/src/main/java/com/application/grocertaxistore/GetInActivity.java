@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -22,15 +21,11 @@ import com.application.grocertaxistore.Utilities.Constants;
 import com.application.grocertaxistore.Utilities.PreferenceManager;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.tapadoo.alerter.Alerter;
 
@@ -48,7 +43,7 @@ public class GetInActivity extends AppCompatActivity {
     private TextView forgotPassword, setupBtn;
     private ConstraintLayout getInBtn;
     private CardView getInBtnContainer;
-    private ProgressBar getInProgressBar;
+    private ProgressBar progressBar;
 
     private FirebaseAuth firebaseAuth;
     private CollectionReference storeRef;
@@ -86,7 +81,7 @@ public class GetInActivity extends AppCompatActivity {
         forgotPassword = findViewById(R.id.forgot_password);
         getInBtnContainer = findViewById(R.id.get_in_btn_container);
         getInBtn = findViewById(R.id.get_in_btn);
-        getInProgressBar = findViewById(R.id.get_in_progress_bar);
+        progressBar = findViewById(R.id.progress_bar);
         setupBtn = findViewById(R.id.set_up_btn);
     }
 
@@ -108,9 +103,12 @@ public class GetInActivity extends AppCompatActivity {
         });
 
         forgotPassword.setOnClickListener(view -> {
-            getInProgressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
             getInBtnContainer.setVisibility(View.VISIBLE);
             getInBtn.setEnabled(true);
+
+            startActivity(new Intent(GetInActivity.this, ForgotPasswordActivity.class));
+            CustomIntent.customType(GetInActivity.this, "bottom-to-up");
         });
 
         getInBtn.setOnClickListener(v -> {
@@ -118,7 +116,7 @@ public class GetInActivity extends AppCompatActivity {
 
             final String emailOrMobileValue = emailOrMobile.getEditText().getText().toString().toLowerCase().trim();
 
-            if(!validateEmailOrMobile() | !validatePassword()) {
+            if (!validateEmailOrMobile() | !validatePassword()) {
                 return;
             } else {
                 if (Patterns.EMAIL_ADDRESS.matcher(emailOrMobileValue).matches()) {
@@ -131,7 +129,7 @@ public class GetInActivity extends AppCompatActivity {
                     } else {
                         login(emailOrMobileValue);
                     }
-                } else if(emailOrMobileValue.matches("\\d{10}")) {
+                } else if (emailOrMobileValue.matches("\\d{10}")) {
                     emailOrMobile.setError(null);
                     emailOrMobile.setErrorEnabled(false);
 
@@ -141,56 +139,56 @@ public class GetInActivity extends AppCompatActivity {
                     } else {
                         getInBtnContainer.setVisibility(View.INVISIBLE);
                         getInBtn.setEnabled(false);
-                        getInProgressBar.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.VISIBLE);
 
                         storeRef.whereEqualTo(Constants.KEY_STORE_MOBILE, "+91" + emailOrMobileValue)
                                 .get().addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
-                                        if (documentSnapshots.isEmpty()) {
-                                            getInProgressBar.setVisibility(View.GONE);
-                                            getInBtnContainer.setVisibility(View.VISIBLE);
-                                            getInBtn.setEnabled(true);
+                            if (task.isSuccessful()) {
+                                List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+                                if (documentSnapshots.isEmpty()) {
+                                    progressBar.setVisibility(View.GONE);
+                                    getInBtnContainer.setVisibility(View.VISIBLE);
+                                    getInBtn.setEnabled(true);
 
-                                            YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(emailOrMobile);
-                                            Alerter.create(GetInActivity.this)
-                                                    .setText("We couldn't retrieve any store with that mobile. Try changing your city & locality.")
-                                                    .setTextAppearance(R.style.AlertText)
-                                                    .setBackgroundColorRes(R.color.errorColor)
-                                                    .setIcon(R.drawable.ic_error)
-                                                    .setDuration(3000)
-                                                    .enableIconPulse(true)
-                                                    .enableVibration(true)
-                                                    .disableOutsideTouch()
-                                                    .enableProgress(true)
-                                                    .setProgressColorInt(getColor(android.R.color.white))
-                                                    .show();
-                                            return;
-                                        } else {
-                                            String email = documentSnapshots.get(0).getString(Constants.KEY_STORE_EMAIL);
-                                            login(email);
-                                        }
-                                    } else {
-                                        getInProgressBar.setVisibility(View.GONE);
-                                        getInBtnContainer.setVisibility(View.VISIBLE);
-                                        getInBtn.setEnabled(true);
+                                    YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(emailOrMobile);
+                                    Alerter.create(GetInActivity.this)
+                                            .setText("We couldn't retrieve any store with that mobile in the chosen city and locality.")
+                                            .setTextAppearance(R.style.AlertText)
+                                            .setBackgroundColorRes(R.color.errorColor)
+                                            .setIcon(R.drawable.ic_error)
+                                            .setDuration(3000)
+                                            .enableIconPulse(true)
+                                            .enableVibration(true)
+                                            .disableOutsideTouch()
+                                            .enableProgress(true)
+                                            .setProgressColorInt(getColor(android.R.color.white))
+                                            .show();
+                                    return;
+                                } else {
+                                    String email = documentSnapshots.get(0).getString(Constants.KEY_STORE_EMAIL);
+                                    login(email);
+                                }
+                            } else {
+                                progressBar.setVisibility(View.GONE);
+                                getInBtnContainer.setVisibility(View.VISIBLE);
+                                getInBtn.setEnabled(true);
 
-                                        Alerter.create(GetInActivity.this)
-                                                .setText("Whoa! Something broke. Try again!")
-                                                .setTextAppearance(R.style.AlertText)
-                                                .setBackgroundColorRes(R.color.errorColor)
-                                                .setIcon(R.drawable.ic_error)
-                                                .setDuration(3000)
-                                                .enableIconPulse(true)
-                                                .enableVibration(true)
-                                                .disableOutsideTouch()
-                                                .enableProgress(true)
-                                                .setProgressColorInt(getColor(android.R.color.white))
-                                                .show();
-                                        return;
-                                    }
-                                }).addOnFailureListener(e -> {
-                            getInProgressBar.setVisibility(View.GONE);
+                                Alerter.create(GetInActivity.this)
+                                        .setText("Whoa! Something broke. Try again!")
+                                        .setTextAppearance(R.style.AlertText)
+                                        .setBackgroundColorRes(R.color.errorColor)
+                                        .setIcon(R.drawable.ic_error)
+                                        .setDuration(3000)
+                                        .enableIconPulse(true)
+                                        .enableVibration(true)
+                                        .disableOutsideTouch()
+                                        .enableProgress(true)
+                                        .setProgressColorInt(getColor(android.R.color.white))
+                                        .show();
+                                return;
+                            }
+                        }).addOnFailureListener(e -> {
+                            progressBar.setVisibility(View.GONE);
                             getInBtnContainer.setVisibility(View.VISIBLE);
                             getInBtn.setEnabled(true);
 
@@ -218,7 +216,7 @@ public class GetInActivity extends AppCompatActivity {
         });
 
         setupBtn.setOnClickListener(view -> {
-            getInProgressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
             getInBtnContainer.setVisibility(View.VISIBLE);
             getInBtn.setEnabled(true);
 
@@ -259,7 +257,7 @@ public class GetInActivity extends AppCompatActivity {
     private void login(final String email) {
         getInBtnContainer.setVisibility(View.INVISIBLE);
         getInBtn.setEnabled(false);
-        getInProgressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
         firebaseAuth.signInWithEmailAndPassword(email, password.getEditText().getText().toString().trim())
                 .addOnCompleteListener(task -> {
@@ -267,19 +265,22 @@ public class GetInActivity extends AppCompatActivity {
                         storeRef.whereEqualTo(Constants.KEY_STORE_EMAIL, email)
                                 .get()
                                 .addOnCompleteListener(task1 -> {
-                                    if(task1.isSuccessful()) {
+                                    if (task1.isSuccessful()) {
                                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                         preferenceManager.putString(Constants.KEY_UID, task1.getResult().getDocuments().get(0).getString(Constants.KEY_UID));
                                         preferenceManager.putString(Constants.KEY_STORE_ID, task1.getResult().getDocuments().get(0).getString(Constants.KEY_STORE_ID));
+                                        preferenceManager.putBoolean(Constants.KEY_STORE_STATUS, task1.getResult().getDocuments().get(0).getBoolean(Constants.KEY_STORE_STATUS));
                                         preferenceManager.putString(Constants.KEY_STORE_NAME, task1.getResult().getDocuments().get(0).getString(Constants.KEY_STORE_NAME));
                                         preferenceManager.putString(Constants.KEY_STORE_OWNER, task1.getResult().getDocuments().get(0).getString(Constants.KEY_STORE_OWNER));
                                         preferenceManager.putString(Constants.KEY_STORE_EMAIL, task1.getResult().getDocuments().get(0).getString(Constants.KEY_STORE_EMAIL));
                                         preferenceManager.putString(Constants.KEY_STORE_MOBILE, task1.getResult().getDocuments().get(0).getString(Constants.KEY_STORE_MOBILE));
+                                        preferenceManager.putString(Constants.KEY_STORE_LOCATION, task1.getResult().getDocuments().get(0).getString(Constants.KEY_STORE_LOCATION));
                                         preferenceManager.putString(Constants.KEY_STORE_ADDRESS, task1.getResult().getDocuments().get(0).getString(Constants.KEY_STORE_ADDRESS));
+                                        preferenceManager.putString(Constants.KEY_STORE_LATITUDE, String.valueOf(task1.getResult().getDocuments().get(0).getDouble(Constants.KEY_STORE_LATITUDE)));
+                                        preferenceManager.putString(Constants.KEY_STORE_LONGITUDE, String.valueOf(task1.getResult().getDocuments().get(0).getDouble(Constants.KEY_STORE_LONGITUDE)));
                                         preferenceManager.putString(Constants.KEY_STORE_TIMING, task1.getResult().getDocuments().get(0).getString(Constants.KEY_STORE_TIMING));
-                                        preferenceManager.putString(Constants.KEY_STORE_DELIVERY_CHARGES, task1.getResult().getDocuments().get(0).getString(Constants.KEY_STORE_DELIVERY_CHARGES));
+                                        preferenceManager.putString(Constants.KEY_STORE_MINIMUM_ORDER_VALUE, String.valueOf(task1.getResult().getDocuments().get(0).getDouble(Constants.KEY_STORE_MINIMUM_ORDER_VALUE)));
                                         preferenceManager.putString(Constants.KEY_STORE_IMAGE, task1.getResult().getDocuments().get(0).getString(Constants.KEY_STORE_IMAGE));
-                                        preferenceManager.putBoolean(Constants.KEY_STORE_STATUS, task1.getResult().getDocuments().get(0).getBoolean(Constants.KEY_STORE_STATUS));
                                         preferenceManager.putString(Constants.KEY_CITY, preferenceManager.getString(Constants.KEY_CITY));
                                         preferenceManager.putString(Constants.KEY_LOCALITY, preferenceManager.getString(Constants.KEY_LOCALITY));
 
@@ -289,7 +290,7 @@ public class GetInActivity extends AppCompatActivity {
                                         CustomIntent.customType(GetInActivity.this, "fadein-to-fadeout");
                                         finish();
                                     } else {
-                                        getInProgressBar.setVisibility(View.GONE);
+                                        progressBar.setVisibility(View.GONE);
                                         getInBtnContainer.setVisibility(View.VISIBLE);
                                         getInBtn.setEnabled(true);
 
@@ -308,26 +309,26 @@ public class GetInActivity extends AppCompatActivity {
                                         return;
                                     }
                                 }).addOnFailureListener(e -> {
-                                    getInProgressBar.setVisibility(View.GONE);
-                                    getInBtnContainer.setVisibility(View.VISIBLE);
-                                    getInBtn.setEnabled(true);
+                            progressBar.setVisibility(View.GONE);
+                            getInBtnContainer.setVisibility(View.VISIBLE);
+                            getInBtn.setEnabled(true);
 
-                                    Alerter.create(GetInActivity.this)
-                                            .setText("Whoa! Something broke. Try again!")
-                                            .setTextAppearance(R.style.AlertText)
-                                            .setBackgroundColorRes(R.color.errorColor)
-                                            .setIcon(R.drawable.ic_error)
-                                            .setDuration(3000)
-                                            .enableIconPulse(true)
-                                            .enableVibration(true)
-                                            .disableOutsideTouch()
-                                            .enableProgress(true)
-                                            .setProgressColorInt(getColor(android.R.color.white))
-                                            .show();
-                                    return;
-                                });
+                            Alerter.create(GetInActivity.this)
+                                    .setText("Whoa! Something broke. Try again!")
+                                    .setTextAppearance(R.style.AlertText)
+                                    .setBackgroundColorRes(R.color.errorColor)
+                                    .setIcon(R.drawable.ic_error)
+                                    .setDuration(3000)
+                                    .enableIconPulse(true)
+                                    .enableVibration(true)
+                                    .disableOutsideTouch()
+                                    .enableProgress(true)
+                                    .setProgressColorInt(getColor(android.R.color.white))
+                                    .show();
+                            return;
+                        });
                     } else {
-                        getInProgressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
                         getInBtnContainer.setVisibility(View.VISIBLE);
                         getInBtn.setEnabled(true);
 
@@ -346,7 +347,7 @@ public class GetInActivity extends AppCompatActivity {
                         return;
                     }
                 }).addOnFailureListener(e -> {
-            getInProgressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
             getInBtnContainer.setVisibility(View.VISIBLE);
             getInBtn.setEnabled(true);
 
@@ -366,13 +367,16 @@ public class GetInActivity extends AppCompatActivity {
         });
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     private boolean isConnectedToInternet(GetInActivity getInActivity) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getInActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getInActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        if ((wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected())) {
+        if (null != networkInfo &&
+                (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)) {
             return true;
         } else {
             return false;
