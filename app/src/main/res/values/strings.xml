@@ -108,7 +108,7 @@
     <string name="vegetarian">Vegetarian</string>
     <string name="unit_quantity_eg_1_kg_1_l_500_gm">Unit quantity (eg. 1 kg, 1 L, 500 gm)*</string>
     <string name="mrp">MRP*</string>
-    <string name="retail_price">Retail Price*</string>
+    <string name="our_price">Our Price*</string>
     <string name="units_in_stock">Units in stock*</string>
     <string name="additional_information_optional">Additional Information (optional)</string>
     <string name="description">Description</string>
