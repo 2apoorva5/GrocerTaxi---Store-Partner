@@ -22,20 +22,20 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="144dp"
-            android:clipToPadding="false">
+            android:clipToPadding="false"
+            android:paddingBottom="144dp">
 
             <ImageView
                 android:id="@+id/store_image"
                 android:layout_width="0dp"
                 android:layout_height="320dp"
-                android:src="@drawable/img_store_placeholder"
-                android:scaleType="centerCrop"
                 android:contentDescription="@string/app_name"
                 android:foreground="@drawable/store_image_foreground"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_store_placeholder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/store_name"
@@ -43,17 +43,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="32dp"
-                android:text="@string/store_name"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/store_name"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/store_image"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/store_image" />
 
             <TextView
                 android:id="@+id/text_owner"
@@ -61,17 +61,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="32dp"
-                android:text="@string/managed_by"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorInactive"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/managed_by"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorInactive"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/store_name"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/store_name" />
 
             <TextView
                 android:id="@+id/store_owner"
@@ -79,20 +79,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/store_owner"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                android:maxLines="1"
-                android:singleLine="true"
                 android:ellipsize="end"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/store_owner"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="14sp"
+                android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_owner"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_owner" />
 
             <TextView
                 android:id="@+id/text_store_status"
@@ -100,17 +100,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="32dp"
-                android:text="@string/store_closed"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/store_closed"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/open_close_switch"
-                app:layout_constraintTop_toBottomOf="@+id/store_owner"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/store_owner" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/open_close_switch"
@@ -118,10 +118,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:checked="false"
-                app:useMaterialThemeColors="false"
-                app:layout_constraintTop_toTopOf="@+id/text_store_status"
                 app:layout_constraintBottom_toBottomOf="@+id/text_store_status"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/text_store_status"
+                app:useMaterialThemeColors="false" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/view_ratings"
@@ -131,28 +131,28 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/open_close_switch"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/open_close_switch">
 
                 <TextView
                     android:id="@+id/text_rating"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp"
                     android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="12dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
                     android:text="@string/rating_reviews"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/store_rating"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/store_rating"
@@ -176,18 +176,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:layout_marginEnd="16dp"
-                    android:rating="3.5"
                     android:numStars="5"
+                    android:rating="3.5"
                     android:stepSize="0.1"
-                    app:starDrawable="@drawable/ic_rate_active"
-                    app:bgDrawable="@drawable/ic_rate_inactive"
-                    app:starSpacing="2dp"
-                    app:starColor="@color/colorPrimary"
-                    app:subStarColor="@color/colorViews"
                     app:bgColor="@color/colorViews"
+                    app:bgDrawable="@drawable/ic_rate_inactive"
                     app:layout_constraintBottom_toBottomOf="@+id/text_rating"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/text_rating" />
+                    app:layout_constraintTop_toTopOf="@+id/text_rating"
+                    app:starColor="@color/colorPrimary"
+                    app:starDrawable="@drawable/ic_rate_active"
+                    app:starSpacing="2dp"
+                    app:subStarColor="@color/colorViews" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -195,29 +195,29 @@
                 android:id="@+id/divider1"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:background="@color/colorInactive"
-                app:layout_constraintTop_toBottomOf="@id/view_ratings"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_ratings" />
 
             <TextView
                 android:id="@+id/text_address"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="40dp"
-                android:text="@string/address"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorInactive"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textStyle="bold"
+                android:layout_marginTop="32dp"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/address"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorInactive"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider1"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
             <TextView
                 android:id="@+id/store_address"
@@ -225,17 +225,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/sample_address"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/sample_address"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="14sp"
+                android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_address"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_address" />
 
             <TextView
                 android:id="@+id/text_email"
@@ -243,17 +243,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/email_"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorInactive"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/email_"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorInactive"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/store_address"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/store_address" />
 
             <TextView
                 android:id="@+id/store_email"
@@ -261,20 +261,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/xxxxxxxxxxxx_xxxxx_xxx"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
+                android:ellipsize="end"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:ellipsize="end"
+                android:text="@string/xxxxxxxxxxxx_xxxxx_xxx"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="14sp"
+                android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_email"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_email" />
 
             <TextView
                 android:id="@+id/text_mobile"
@@ -282,17 +282,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/mobile_"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorInactive"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/mobile_"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorInactive"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/store_email"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/store_email" />
 
             <TextView
                 android:id="@+id/store_mobile"
@@ -300,45 +300,45 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/_91xxxxxxxxxx"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/_91xxxxxxxxxx"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="14sp"
+                android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_mobile"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_mobile" />
 
             <View
                 android:id="@+id/divider2"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="32dp"
                 android:background="@color/colorInactive"
-                app:layout_constraintTop_toBottomOf="@id/store_mobile"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/store_mobile" />
 
             <TextView
                 android:id="@+id/text_timing"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="40dp"
-                android:text="@string/store_timing"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorInactive"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textStyle="bold"
+                android:layout_marginTop="32dp"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/store_timing"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorInactive"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider2"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
             <TextView
                 android:id="@+id/store_timing"
@@ -346,17 +346,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/_00_00_am_00_00_pm"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/_00_00_am_00_00_pm"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="14sp"
+                android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_timing"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_timing" />
 
             <TextView
                 android:id="@+id/text_minimum_order_value"
@@ -364,17 +364,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/minimum_order_value"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorInactive"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/minimum_order_value"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorInactive"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/store_timing"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/store_timing" />
 
             <TextView
                 android:id="@+id/minimum_order_amount"
@@ -382,71 +382,71 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/_0_00"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorTextDark"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textStyle="normal"
                 android:fontFamily="@font/montserrat"
                 android:includeFontPadding="false"
+                android:text="@string/_0_00"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="14sp"
+                android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_minimum_order_value"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_minimum_order_value" />
 
             <View
                 android:id="@+id/divider3"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="32dp"
                 android:background="@color/colorInactive"
-                app:layout_constraintTop_toBottomOf="@id/minimum_order_amount"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/minimum_order_amount" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/manage_orders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/divider3"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/divider3">
 
                 <TextView
                     android:id="@+id/text_manage_orders"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp"
                     android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="12dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
                     android:text="@string/manage_orders"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/order_indicator"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/order_indicator"
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:layout_marginEnd="16dp"
+                    android:visibility="gone"
                     app:cardBackgroundColor="@color/colorPrimary"
                     app:cardCornerRadius="7dp"
-                    android:visibility="gone"
                     app:cardPreventCornerOverlap="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -457,28 +457,28 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/manage_orders"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/manage_orders">
 
                 <TextView
                     android:id="@+id/text_manage_products"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp"
                     android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="12dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
                     android:text="@string/manage_products"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -486,17 +486,17 @@
                 android:id="@+id/divider4"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:background="@color/colorInactive"
-                app:layout_constraintTop_toBottomOf="@id/manage_products"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/manage_products" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/write_us"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
@@ -508,15 +508,15 @@
                     android:id="@+id/text_write_us"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp"
                     android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="12dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
                     android:text="@string/write_to_us"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -541,14 +541,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_marginVertical="12dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
                     android:text="@string/rate_us_on_google_play"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -573,19 +573,19 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_marginVertical="12dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
                     android:text="@string/invite_a_friend"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -593,42 +593,42 @@
                 android:id="@+id/divider5"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:background="@color/colorInactive"
-                app:layout_constraintTop_toBottomOf="@id/invite_friend"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/invite_friend" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/privacy_policy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/divider5"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/divider5">
 
                 <TextView
                     android:id="@+id/text_privacy_policy"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp"
                     android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="12dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
                     android:text="@string/privacy_policy"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -639,28 +639,28 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/privacy_policy"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/privacy_policy">
 
                 <TextView
                     android:id="@+id/text_terms"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp"
                     android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="12dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
                     android:text="@string/terms_of_service"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -671,28 +671,28 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/terms_of_service"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/terms_of_service">
 
                 <TextView
                     android:id="@+id/text_refund"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp"
                     android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="12dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
                     android:text="@string/refund_policy"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -700,30 +700,30 @@
                 android:id="@+id/divider6"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:background="@color/colorInactive"
-                app:layout_constraintTop_toBottomOf="@id/refund_policy"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/refund_policy" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/app_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/divider6"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/divider6">
 
                 <TextView
                     android:id="@+id/text_settings"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp"
                     android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="12dp"
                     android:fontFamily="@font/montserrat"
                     android:includeFontPadding="false"
                     android:text="@string/app_settings"
@@ -732,10 +732,10 @@
                     android:textColor="@color/colorTextDark"
                     android:textSize="16sp"
                     android:textStyle="normal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -746,9 +746,9 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/app_settings"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/app_settings">
 
                 <TextView
                     android:id="@+id/text_logout"
@@ -761,26 +761,26 @@
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/errorColor"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/img_logout"
+                    app:layout_constraintBottom_toBottomOf="@+id/img_logout"
                     app:layout_constraintEnd_toStartOf="@+id/img_logout"
-                    app:layout_constraintBottom_toBottomOf="@+id/img_logout" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/img_logout" />
 
                 <ImageView
                     android:id="@+id/img_logout"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginVertical="14dp"
                     android:layout_marginEnd="16dp"
-                    android:src="@drawable/ic_logout"
-                    android:scaleType="centerCrop"
-                    app:tint="@color/errorColor"
                     android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_logout"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:tint="@color/errorColor" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -63,7 +63,7 @@
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/illustration_add_product"
                     app:layout_constraintStart_toStartOf="parent"
