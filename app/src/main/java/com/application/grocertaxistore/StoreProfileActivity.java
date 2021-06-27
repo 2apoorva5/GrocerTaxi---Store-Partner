@@ -31,6 +31,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,8 +57,8 @@ public class StoreProfileActivity extends AppCompatActivity {
     private TextView storeName, textStoreStatus, ownerName, storeRating, storeAddress, storeEmail, storeMobile,
             storeTiming, storeMinimumOrderAmount;
     private AndRatingBar storeRatingBar;
-    private ConstraintLayout viewRatings, manageOrdersBtn, manageProductsBtn, writeToUs, rateUs, inviteFriends, privacyPolicy,
-            termsOfService, refundPolicy, appSettings, logout;
+    private ConstraintLayout viewRatings, manageOrdersBtn, manageProductsBtn, writeToUs, rateUs, inviteFriends,
+            aboutUs, privacyPolicy, termsOfService, refundPolicy, appSettings, logout;
     private BottomNavigationView bottomBar;
     private FloatingActionButton addProductBtn;
     private CardView orderIndicator;
@@ -129,6 +130,7 @@ public class StoreProfileActivity extends AppCompatActivity {
         writeToUs = findViewById(R.id.write_us);
         rateUs = findViewById(R.id.rate_us);
         inviteFriends = findViewById(R.id.invite_friend);
+        aboutUs = findViewById(R.id.about_us);
         privacyPolicy = findViewById(R.id.privacy_policy);
         termsOfService = findViewById(R.id.terms_of_service);
         refundPolicy = findViewById(R.id.refund_policy);
@@ -380,6 +382,19 @@ public class StoreProfileActivity extends AppCompatActivity {
             String app_url = "https://play.google.com/store/apps/details?id=" + StoreProfileActivity.this.getPackageName();
             shareIntent.putExtra(Intent.EXTRA_TEXT, app_url);
             startActivity(Intent.createChooser(shareIntent, "Share via"));
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        aboutUs.setOnClickListener(v -> {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(StoreProfileActivity.this);
+            bottomSheetDialog.setContentView(R.layout.bottom_sheet_about);
+            bottomSheetDialog.setCanceledOnTouchOutside(false);
+
+            ImageView closeSheetBtn = bottomSheetDialog.findViewById(R.id.close_bottom_sheet_btn);
+            closeSheetBtn.setOnClickListener(v12 -> bottomSheetDialog.dismiss());
+
+            bottomSheetDialog.show();
         });
 
         ////////////////////////////////////////////////////////////////////////////////////////////

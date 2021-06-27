@@ -21,6 +21,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -43,7 +44,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon, android:allowBackup"
         tools:targetApi="q">
-        <activity android:name=".ForgotPasswordActivity"></activity>
+        <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".CancellationRequestsActivity" />
         <activity android:name=".StoreReviewsActivity" />
         <activity android:name=".UpdateProductActivity" />
