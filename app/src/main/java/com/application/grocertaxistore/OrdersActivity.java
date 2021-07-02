@@ -98,7 +98,10 @@ public class OrdersActivity extends AppCompatActivity {
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        backBtn.setOnClickListener(v -> onBackPressed());
+        backBtn.setOnClickListener(v -> {
+            onBackPressed();
+            finish();
+        });
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -166,12 +169,6 @@ public class OrdersActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
         CustomIntent.customType(OrdersActivity.this, "right-to-left");
     }
 }

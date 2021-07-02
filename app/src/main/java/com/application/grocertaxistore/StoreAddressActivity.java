@@ -270,7 +270,10 @@ public class StoreAddressActivity extends AppCompatActivity implements OnMapRead
     }
 
     private void setActionOnViews() {
-        backBtn.setOnClickListener(v -> onBackPressed());
+        backBtn.setOnClickListener(v -> {
+            onBackPressed();
+            finish();
+        });
 
         pin.setVisibility(View.GONE);
         info.setVisibility(View.GONE);
@@ -422,12 +425,6 @@ public class StoreAddressActivity extends AppCompatActivity implements OnMapRead
                 UIUtil.hideKeyboard(StoreAddressActivity.this);
             }
         });
-        finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
         CustomIntent.customType(StoreAddressActivity.this, "up-to-bottom");
     }
 }

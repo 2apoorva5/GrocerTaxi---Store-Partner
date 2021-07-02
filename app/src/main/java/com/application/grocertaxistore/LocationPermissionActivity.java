@@ -77,7 +77,10 @@ public class LocationPermissionActivity extends AppCompatActivity {
     }
 
     private void setActionOnViews() {
-        backBtn.setOnClickListener(v -> onBackPressed());
+        backBtn.setOnClickListener(v -> {
+            onBackPressed();
+            finish();
+        });
 
         grantBtn.setOnClickListener(v -> {
             if (!isConnectedToInternet(LocationPermissionActivity.this)) {
@@ -166,12 +169,6 @@ public class LocationPermissionActivity extends AppCompatActivity {
                 UIUtil.hideKeyboard(LocationPermissionActivity.this);
             }
         });
-        finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
         CustomIntent.customType(LocationPermissionActivity.this, "up-to-bottom");
     }
 }

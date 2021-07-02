@@ -140,7 +140,10 @@ public class AddProductActivity extends AppCompatActivity {
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        closeBtn.setOnClickListener(v -> onBackPressed());
+        closeBtn.setOnClickListener(v -> {
+            onBackPressed();
+            finish();
+        });
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -811,12 +814,6 @@ public class AddProductActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
         CustomIntent.customType(AddProductActivity.this, "up-to-bottom");
     }
 }

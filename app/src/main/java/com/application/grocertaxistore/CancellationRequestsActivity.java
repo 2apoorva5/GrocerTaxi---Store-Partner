@@ -137,7 +137,10 @@ public class CancellationRequestsActivity extends AppCompatActivity {
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        closeBtn.setOnClickListener(v -> onBackPressed());
+        closeBtn.setOnClickListener(v -> {
+            onBackPressed();
+            finish();
+        });
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -337,12 +340,6 @@ public class CancellationRequestsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
         CustomIntent.customType(CancellationRequestsActivity.this, "up-to-bottom");
     }
 }

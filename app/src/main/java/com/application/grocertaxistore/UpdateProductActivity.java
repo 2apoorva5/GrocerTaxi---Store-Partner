@@ -131,7 +131,10 @@ public class UpdateProductActivity extends AppCompatActivity {
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        closeBtn.setOnClickListener(v -> onBackPressed());
+        closeBtn.setOnClickListener(v -> {
+            onBackPressed();
+            finish();
+        });
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -659,12 +662,6 @@ public class UpdateProductActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
         CustomIntent.customType(UpdateProductActivity.this, "up-to-bottom");
     }
 }

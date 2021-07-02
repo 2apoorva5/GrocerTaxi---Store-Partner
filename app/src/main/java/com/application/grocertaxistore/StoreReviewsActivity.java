@@ -126,7 +126,10 @@ public class StoreReviewsActivity extends AppCompatActivity {
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        closeBtn.setOnClickListener(v -> onBackPressed());
+        closeBtn.setOnClickListener(v -> {
+            onBackPressed();
+            finish();
+        });
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -255,12 +258,6 @@ public class StoreReviewsActivity extends AppCompatActivity {
                 UIUtil.hideKeyboard(StoreReviewsActivity.this);
             }
         });
-        finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
         CustomIntent.customType(StoreReviewsActivity.this, "up-to-bottom");
     }
 }

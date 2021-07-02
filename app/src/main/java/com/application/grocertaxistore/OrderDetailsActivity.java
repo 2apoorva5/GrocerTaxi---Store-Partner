@@ -185,7 +185,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        closeBtn.setOnClickListener(v -> onBackPressed());
+        closeBtn.setOnClickListener(v -> {
+            onBackPressed();
+            finish();
+        });
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1309,12 +1312,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
+        super.onBackPressed();
         CustomIntent.customType(OrderDetailsActivity.this, "up-to-bottom");
     }
 }

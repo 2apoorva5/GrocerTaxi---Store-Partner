@@ -83,7 +83,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void setActionOnViews() {
-        closeBtn.setOnClickListener(v -> onBackPressed());
+        closeBtn.setOnClickListener(v -> {
+            onBackPressed();
+            finish();
+        });
 
         KeyboardVisibilityEvent.setEventListener(ForgotPasswordActivity.this, isOpen -> {
             if (!isOpen) {
@@ -229,12 +232,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 UIUtil.hideKeyboard(ForgotPasswordActivity.this);
             }
         });
-        finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
         CustomIntent.customType(ForgotPasswordActivity.this, "up-to-bottom");
     }
 }
